@@ -1,7 +1,7 @@
 package com.gznznzjsn.carservice.domain.entity;
 
-public class Consumable {
+public class Requirement {
     private long id;
     private ConsumableType consumableType;
-    private long availableQuantity;
+    private long requiredQuantity;
 }

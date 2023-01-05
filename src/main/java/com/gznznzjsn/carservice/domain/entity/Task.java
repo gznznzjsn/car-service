@@ -13,11 +13,10 @@ public class Task {
     private final long id;
     private String name;
     private int duration;
-    private int cost_per_hour;
+    private long cost_per_hour;
 
     private Specialization requiredSpecialization;
 
-    private List<Consumable> consumables;
-    private List<Assignment> assignments;
+    private List<Requirement> requiredConsumables;
 
 }

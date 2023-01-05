@@ -1,5 +1,9 @@
 package com.gznznzjsn.carservice.dao;
 
-public interface EmployeeDao {
+import com.gznznzjsn.carservice.domain.entity.Employee;
 
+import java.util.List;
+
+public interface EmployeeDao {
+    List<Employee> fetchAll();
 }

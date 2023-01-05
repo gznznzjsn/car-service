@@ -3,10 +3,8 @@ package com.gznznzjsn.carservice.domain.entity;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class Assignment {
+public class ConsumableType {
     private final long id;
-    private final Employee employee;
-    private final Task task;
-
-    private String commentary;
+    private final String name;
+    private String cost;
 }
