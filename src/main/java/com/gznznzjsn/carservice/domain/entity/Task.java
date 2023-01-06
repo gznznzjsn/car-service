@@ -4,16 +4,17 @@ import com.gznznzjsn.carservice.domain.enums.Specialization;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
 @Builder
 public class Task {
 
-    private final long id;
+    private Long id;
     private String name;
     private int duration;
-    private long cost_per_hour;
+    private BigDecimal cost_per_hour;
 
     private Specialization requiredSpecialization;
 

@@ -1,12 +1,13 @@
 package com.gznznzjsn.carservice.domain.entity;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
-@AllArgsConstructor
+@Data
+@Builder
 public class Assignment {
-    private final long id;
-    private final Employee employee;
-    private final Task task;
-
+    private Long id;
+    private Employee employee;
+    private Task task;
     private String commentary;
 }

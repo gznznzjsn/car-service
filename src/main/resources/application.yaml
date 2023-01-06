@@ -6,6 +6,4 @@ spring:
     url: jdbc:postgresql://localhost:5432/car_service
     username: postgres
     password: 1q2w3e
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
+

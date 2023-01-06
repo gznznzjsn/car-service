@@ -1,20 +1,19 @@
 package com.gznznzjsn.carservice.domain.entity;
 
 import com.gznznzjsn.carservice.domain.enums.Specialization;
+import lombok.Builder;
 import lombok.Data;
-
-import java.util.List;
 
 /*
 TODO
 consider the annotations for entities
-think over the specialization
  */
 @Data
+@Builder
 public class Employee {
-    private final long id;
+    private Long id;
     private String name;
-    private List<Specialization> specializations;
+    private Specialization specialization;
 
 
 }

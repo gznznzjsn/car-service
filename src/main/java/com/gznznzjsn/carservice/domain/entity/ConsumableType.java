@@ -1,10 +1,14 @@
 package com.gznznzjsn.carservice.domain.entity;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
-@AllArgsConstructor
+import java.math.BigDecimal;
+
+@Data
+@Builder
 public class ConsumableType {
-    private final long id;
-    private final String name;
-    private String cost;
+    private Long id;
+    private String name;
+    private BigDecimal cost;
 }

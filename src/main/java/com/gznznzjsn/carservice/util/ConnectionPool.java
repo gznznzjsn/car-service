@@ -2,14 +2,10 @@ package com.gznznzjsn.carservice.util;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@NoArgsConstructor
-@Component
 public class ConnectionPool {
 
     private static final HikariConfig config = new HikariConfig();

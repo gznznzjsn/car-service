@@ -6,5 +6,10 @@ import java.util.List;
 
 
 public interface EmployeeService {
-    List<Employee> getAllEmployees();
+    List<Employee> readAllEmployees();
+
+    Employee createEmployee(Employee employee);
+
+    Employee getEmployeeById(Long employeeId);
 }
+

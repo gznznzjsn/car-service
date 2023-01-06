@@ -11,9 +11,7 @@ import java.util.List;
 @Builder
 public class Order {
 
-    private final long id;
-    private User customer;
-
+    private Long id;
     private OrderStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime finishedAt;
