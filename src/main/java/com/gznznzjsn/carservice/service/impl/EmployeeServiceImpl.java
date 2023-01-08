@@ -1,7 +1,7 @@
 package com.gznznzjsn.carservice.service.impl;
 
 import com.gznznzjsn.carservice.dao.EmployeeDao;
-import com.gznznzjsn.carservice.domain.entity.Employee;
+import com.gznznzjsn.carservice.domain.carservice.Employee;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
 import com.gznznzjsn.carservice.service.EmployeeService;
 import lombok.RequiredArgsConstructor;

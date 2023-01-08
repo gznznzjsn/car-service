@@ -1,6 +1,6 @@
 package com.gznznzjsn.carservice.dao;
 
-import com.gznznzjsn.carservice.domain.entity.Employee;
+import com.gznznzjsn.carservice.domain.carservice.Employee;
 
 import java.util.List;
 import java.util.Optional;

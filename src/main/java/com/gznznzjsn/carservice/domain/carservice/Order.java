@@ -1,6 +1,6 @@
-package com.gznznzjsn.carservice.domain.entity;
+package com.gznznzjsn.carservice.domain.carservice;
 
-import com.gznznzjsn.carservice.domain.enums.OrderStatus;
+import com.gznznzjsn.carservice.domain.carservice.enums.OrderStatus;
 import lombok.Builder;
 import lombok.Data;
 

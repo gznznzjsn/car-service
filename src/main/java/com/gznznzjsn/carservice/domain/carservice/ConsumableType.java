@@ -1,4 +1,4 @@
-package com.gznznzjsn.carservice.domain.entity;
+package com.gznznzjsn.carservice.domain.carservice;
 
 import lombok.Builder;
 import lombok.Data;

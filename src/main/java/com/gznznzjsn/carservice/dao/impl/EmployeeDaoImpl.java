@@ -1,8 +1,8 @@
 package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.EmployeeDao;
-import com.gznznzjsn.carservice.domain.entity.Employee;
-import com.gznznzjsn.carservice.domain.enums.Specialization;
+import com.gznznzjsn.carservice.domain.carservice.Employee;
+import com.gznznzjsn.carservice.domain.carservice.enums.Specialization;
 import com.gznznzjsn.carservice.util.ConnectionPool;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Transactional(readOnly = true)
     public List<Employee> readAll() {
         String FETCH_ALL_QUERY = """
-                SELECT * FROM employees
+                SELECT employee_id, name, specializations.value FROM employees
                 JOIN specializations USING(specialization_id);
                 """;
         List<Employee> allEmployees = new ArrayList<>();

@@ -1,18 +1,16 @@
 package com.gznznzjsn.carservice.web.dto;
 
-import com.gznznzjsn.carservice.domain.enums.Specialization;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-/*
-* todo
-*  validation
-* */
-@AllArgsConstructor
-@Getter
-public class EmployeeDto {
+import com.gznznzjsn.carservice.domain.carservice.enums.Specialization;
 
-    private final Long id;
-    private final String name;
-    private final Specialization specialization;
 
+public enum EmployeeDto {
+    ;
+
+    public enum Response {
+        ;
+
+        public record Create(Long id, String name, Specialization specialization) {
+        }
+    }
 }
+

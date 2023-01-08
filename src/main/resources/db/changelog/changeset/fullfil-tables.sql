@@ -8,10 +8,10 @@ values ('CLEANER'),
 
 --changeset gznznzjsn:fulfill-statuses
 insert into statuses (value)
-values ('under_consideration'),
-       ('in_process'),
-       ('done'),
-       ('rejected');
+values ('UNDER_CONSIDERATION'),
+       ('IN_PROCESS'),
+       ('DONE'),
+       ('CANCELLED');
 
 
 --changeset gznznzjsn:fulfill-consumable-types

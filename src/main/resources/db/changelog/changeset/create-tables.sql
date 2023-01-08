@@ -98,8 +98,18 @@ create table assignments
 (
     assignment_id bigserial primary key,
     order_id      bigint references orders on delete cascade ,
-    task_id       bigint references tasks on delete cascade ,
+    specialization_id       bigint references specializations on delete cascade ,
     employee_id   bigint references employees on delete cascade ,
-    commentary    varchar(255)
+    commentary    varchar(255),
+    constraint a_un unique (order_id, specialization_id)
 );
 --rollback drop table assignments;
+
+--changeset gznznzjsn:create-assignments_tasks
+create table assignments_tasks
+(
+    task_id        bigint references tasks on delete    cascade ,
+    requirement_id bigint references requirements on delete cascade ,
+    constraint at_pkey primary key (task_id, requirement_id)
+);
+--rollback drop table assignments_tasks;
