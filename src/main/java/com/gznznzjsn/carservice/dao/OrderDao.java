@@ -1,7 +1,7 @@
-package com.gznznzjsn.carservice.service;
+package com.gznznzjsn.carservice.dao;
 
 import com.gznznzjsn.carservice.domain.carservice.Order;
 
-public interface OrderService {
+public interface OrderDao {
     Order createOrder(Long userId, Order order);
 }

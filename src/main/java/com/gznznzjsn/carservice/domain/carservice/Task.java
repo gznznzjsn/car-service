@@ -14,7 +14,7 @@ public class Task {
     private Long id;
     private String name;
     private int duration;
-    private BigDecimal cost_per_hour;
+    private BigDecimal costPerHour;
 
     private Specialization requiredSpecialization;
 

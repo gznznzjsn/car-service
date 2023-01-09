@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Mapper(componentModel = "spring")
 @Component
 public interface EmployeeMapper {
-    Employee toEntity(EmployeeDto.Response.Create dto);
-    EmployeeDto.Response.Create toDto(Employee entity);
+    @Mapping(target = "id",expression = "java(null)")
+    Employee toEntity(EmployeeDto.Request.Create dto);
+    EmployeeDto.Response.Read toDto(Employee entity);
 }

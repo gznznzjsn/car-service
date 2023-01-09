@@ -5,8 +5,7 @@ import com.gznznzjsn.carservice.domain.carservice.Employee;
 import com.gznznzjsn.carservice.domain.carservice.enums.Specialization;
 import com.gznznzjsn.carservice.util.ConnectionPool;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,12 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Repository
 public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     @SneakyThrows
-    @Transactional(readOnly = true)
     public List<Employee> readAll() {
         String FETCH_ALL_QUERY = """
                 SELECT employee_id, name, specializations.value FROM employees
@@ -44,7 +42,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     @SneakyThrows
-    @Transactional
     public Employee createEmployee(Employee employee) {
         String ADD_EMPLOYEE_QUERY = """
                                 INSERT INTO employees (name, specialization_id)
@@ -67,7 +64,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     @SneakyThrows
-    @Transactional(readOnly = true)
     public Optional<Employee> readEmployeeById(Long employeeId) {
         String FETCH_BY_ID_QUERY = """
                 SELECT name, specializations.value

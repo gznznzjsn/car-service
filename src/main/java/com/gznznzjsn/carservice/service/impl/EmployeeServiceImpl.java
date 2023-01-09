@@ -6,6 +6,7 @@ import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
 import com.gznznzjsn.carservice.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,20 +17,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeDao employeeDao;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Employee> readAllEmployees() {
         return employeeDao.readAll();
     }
 
     @Override
+    @Transactional
     public Employee createEmployee(Employee employee) {
         return employeeDao.createEmployee(employee);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Employee getEmployeeById(Long employeeId) {
         Optional<Employee> optionalEmployee = employeeDao.readEmployeeById(employeeId);
-        if(optionalEmployee.isEmpty()){
-            throw new ResourceNotFoundException("Employee with id="+employeeId+" not found!");
+        if (optionalEmployee.isEmpty()) {
+            throw new ResourceNotFoundException("Employee with id=" + employeeId + " not found!");
         }
         return optionalEmployee.get();
     }

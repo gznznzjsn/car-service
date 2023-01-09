@@ -6,6 +6,12 @@ values ('CLEANER'),
        ('REPAIRER'),
        ('INSPECTOR');
 
+--changeset gznznzjsn:fulfill-assignment_statuses
+insert into assignment_statuses (value)
+values ('UNDER_CONSIDERATION'),
+       ('IN_PROCESS'),
+       ('DONE');
+
 --changeset gznznzjsn:fulfill-statuses
 insert into statuses (value)
 values ('UNDER_CONSIDERATION'),
