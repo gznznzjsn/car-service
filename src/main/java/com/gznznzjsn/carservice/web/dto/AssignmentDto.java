@@ -1,5 +1,7 @@
 package com.gznznzjsn.carservice.web.dto;
 
+import com.gznznzjsn.carservice.domain.carservice.Assignment;
+import com.gznznzjsn.carservice.domain.carservice.enums.AssignmentStatus;
 import com.gznznzjsn.carservice.domain.carservice.enums.Specialization;
 
 import java.math.BigDecimal;
@@ -15,6 +17,9 @@ public enum AssignmentDto {
                              String userCommentary) {
         }
 
+        public record Accept(String employeeCommentary, BigDecimal finalCost) {
+        }
+
     }
 
     public enum Response {
@@ -23,6 +28,10 @@ public enum AssignmentDto {
         public record ReadPrecalculated(Specialization specialization,
                                         EmployeeDto.Response.ReadWithoutSpecialization employee,
                                         List<TaskDto.Response.Read> tasks, BigDecimal precalculatedCost) {
+        }
+
+        public record Read(Specialization specialization, EmployeeDto.Response.ReadWithoutSpecialization employee,
+                           List<TaskDto.Response.Read> tasks, BigDecimal finalCost) {
         }
     }
 

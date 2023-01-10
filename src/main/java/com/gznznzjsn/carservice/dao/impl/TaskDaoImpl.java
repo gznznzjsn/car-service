@@ -17,7 +17,7 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     @SneakyThrows
-    public Optional<Task> readTaskById(Long id) {
+    public Optional<Task> readTask(Long id) {
         String FETCH_BY_ID_QUERY = """
                 SELECT name, duration, cost_per_hour,specializations.value
                 FROM tasks JOIN specializations USING (specialization_id)

@@ -28,18 +28,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
                 INSERT INTO assignments_tasks (task_id, assignment_id)
                 VALUES (?,?)
                     """;
-        String CALCULATE_DURATION_QUERY = """
-                with t as(
-                select * from tasks
-                where task_id in
-                (select task_id from assignments_tasks
-                 where assignment_id =${assignment.getId()})
-                )
-                SELECT spe count(t.duration) FROM  t
-                GROUP BY specialization_id
-                """;
 
-        assignment.setStatus(AssignmentStatus.UNDER_CONSIDERATION);
         try (Connection conn = ConnectionPool.getConnection()) {
             PreparedStatement createStmt = conn.prepareStatement(CREATE_ASSIGNMENT, Statement.RETURN_GENERATED_KEYS);
             createStmt.setLong(1, orderId);
@@ -56,9 +45,61 @@ public class AssignmentDaoImpl implements AssignmentDao {
                 insertStmt.setLong(2, assignment.getId());
                 insertStmt.executeUpdate();
             }
-//           PreparedStatement findStmt = conn.prepareStatement(FIND_EMPLOYEE_QUERY, Statement.RETURN_GENERATED_KEYS);
+        }
+        return assignment;
+    }
 
+    @Override
+    @SneakyThrows
+    public Assignment acceptAssignment(Assignment assignment) {
+        String UPDATE_QUERY = """
+                UPDATE assignments
+                SET assignment_status_id=(SELECT assignment_status_id FROM assignment_statuses WHERE value=?) ,
+                employee_commentary=?,
+                final_cost=?
+                WHERE assignment_id=?
+                """;
+        try (Connection conn = ConnectionPool.getConnection()) {
+            PreparedStatement updateStmt = conn.prepareStatement(UPDATE_QUERY, Statement.RETURN_GENERATED_KEYS);
+            updateStmt.setString(1, assignment.getStatus().name());
+            updateStmt.setString(2, assignment.getEmployeeCommentary());
+            updateStmt.setBigDecimal(3, assignment.getFinalCost());
+            updateStmt.setLong(4, assignment.getId());
+            updateStmt.executeUpdate();
+            ResultSet keys = updateStmt.getGeneratedKeys();
+            keys.next();
+        }
+        return assignment;
+    }
 
+    @Override
+    @SneakyThrows
+    public Assignment updateAssignment(Assignment assignment) {
+        String UPDATE_QUERY = """
+                UPDATE assignments
+                SET
+                specialization_id=(SELECT specialization_id FROM specializations WHERE value=?),
+                start_time=?,
+                final_cost=?,
+                employee_id=?,
+                assignment_status_id=(SELECT assignment_status_id FROM assignment_statuses WHERE value=?) ,
+                user_commentary=?,
+                employee_commentary=?
+                WHERE assignment_id=?
+                """;
+        try (Connection conn = ConnectionPool.getConnection()) {
+            PreparedStatement updateStmt = conn.prepareStatement(UPDATE_QUERY, Statement.RETURN_GENERATED_KEYS);
+            updateStmt.setString(1, assignment.getSpecialization().name());
+            updateStmt.setObject(2, assignment.getStartTime());
+            updateStmt.setBigDecimal(3, assignment.getFinalCost());
+            updateStmt.setLong(4, assignment.getEmployee().getId());
+            updateStmt.setString(5, assignment.getStatus().name());
+            updateStmt.setString(6, assignment.getUserCommentary());
+            updateStmt.setString(7, assignment.getEmployeeCommentary());
+            updateStmt.setLong(8, assignment.getId());
+            updateStmt.executeUpdate();
+            ResultSet keys = updateStmt.getGeneratedKeys();
+            keys.next();
         }
         return assignment;
     }

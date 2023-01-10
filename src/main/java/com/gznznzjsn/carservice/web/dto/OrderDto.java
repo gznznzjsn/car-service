@@ -20,7 +20,7 @@ public enum OrderDto {
 
         public record ReadPrecalculated(BigDecimal precalculatedTotalCost,
                                         List<AssignmentDto.Response.ReadPrecalculated> precalculatedAssignments,
-                                        LocalDate precalculatedFinishTime) {
+                                        LocalDateTime finishTime) {
         }
     }
 }

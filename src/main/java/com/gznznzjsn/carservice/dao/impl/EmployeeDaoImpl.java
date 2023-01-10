@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +65,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     @SneakyThrows
-    public Optional<Employee> readEmployeeById(Long employeeId) {
+    public Optional<Employee> readEmployee(Long employeeId) {
         String FETCH_BY_ID_QUERY = """
                 SELECT name, specializations.value
                 FROM employees JOIN specializations USING (specialization_id)
@@ -88,5 +89,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
 
     }
+
+
 
 }

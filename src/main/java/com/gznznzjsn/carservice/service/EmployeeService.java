@@ -1,6 +1,8 @@
 package com.gznznzjsn.carservice.service;
 
+import com.gznznzjsn.carservice.domain.carservice.Assignment;
 import com.gznznzjsn.carservice.domain.carservice.Employee;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

@@ -7,4 +7,8 @@ import java.time.LocalDateTime;
 public interface AssignmentDao {
 
     Assignment createAssignment(Long orderId, LocalDateTime arrivalTime, Assignment assignment);
+
+    Assignment acceptAssignment(Assignment assignment);
+
+    Assignment updateAssignment(Assignment createdAssignment);
 }

@@ -4,7 +4,7 @@
 create table users
 (
     user_id bigserial primary key,
-    name    varchar(40) not null
+    "name"  varchar(40) not null
 );
 --rollback drop table users;
 
@@ -12,7 +12,7 @@ create table users
 create table if not exists specializations
 (
     specialization_id bigserial primary key,
-    value             varchar(40) not null
+    "value"           varchar(40) not null
 );
 --rollback drop table specializations;
 
@@ -20,7 +20,7 @@ create table if not exists specializations
 create table employees
 (
     employee_id       bigserial primary key,
-    name              varchar(40) not null,
+    "name"            varchar(40) not null,
     specialization_id bigint references specializations on delete cascade
 
 );
@@ -30,8 +30,8 @@ create table employees
 create table consumable_types
 (
     consumable_type_id bigserial primary key,
-    name               varchar(40) not null,
-    cost               numeric
+    "name"             varchar(40) not null,
+    "cost"             numeric
 );
 --rollback drop table consumable_types;
 
@@ -49,7 +49,7 @@ create table consumables
 create table tasks
 (
     task_id           bigserial primary key,
-    name              varchar(40) not null,
+    "name"            varchar(40) not null,
     duration          int,
     cost_per_hour     numeric,
     specialization_id bigint references specializations on delete cascade
@@ -78,7 +78,7 @@ create table tasks_requirements
 create table statuses
 (
     status_id bigserial primary key,
-    value     varchar(40) not null
+    "value"   varchar(40) not null
 );
 --rollback drop table statuses;
 
@@ -97,7 +97,7 @@ create table orders
 create table assignment_statuses
 (
     assignment_status_id bigserial primary key,
-    value                varchar(40)
+    "value"              varchar(40)
 );
 --rollback drop table assignment_statuses;
 --changeset gznznzjsn:create-assignments
@@ -119,8 +119,19 @@ create table assignments
 --changeset gznznzjsn:create-assignments_tasks
 create table assignments_tasks
 (
-    task_id        bigint references tasks on delete cascade,
+    task_id       bigint references tasks on delete cascade,
     assignment_id bigint references assignments on delete cascade,
     constraint at_pkey primary key (task_id, assignment_id)
 );
 --rollback drop table assignments_tasks;
+
+--changeset gznznzjsn:create-periods
+create table periods
+(
+    period_id   bigserial primary key,
+    employee_id bigint references employees on delete cascade,
+    period_date date not null ,
+    period_start   smallint not null,
+    period_end       smallint not null
+);
+--rollback drop table assignments_periods;
