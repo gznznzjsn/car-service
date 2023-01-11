@@ -8,14 +8,15 @@ values ('CLEANER'),
 
 --changeset gznznzjsn:fulfill-assignment_statuses
 insert into assignment_statuses (value)
-values ('UNDER_CONSIDERATION'),
+values ('NOT_SENT'),
+       ('UNDER_CONSIDERATION'),
        ('ACCEPTED'),
-       ('IN_PROCESS'),
        ('DONE');
 
 --changeset gznznzjsn:fulfill-statuses
 insert into statuses (value)
-values ('UNDER_CONSIDERATION'),
+values ('NOT_SENT'),
+       ('UNDER_CONSIDERATION'),
        ('IN_PROCESS'),
        ('DONE');
 
@@ -44,19 +45,13 @@ values ('painting', 3, 10000, 1),
        ('technical inspection', 4, 1000, 3),
        ('headlight replacement', 2, 10000, 1);
 
-insert into requirements (consumable_type_id, required_quantity)
-values (1, 1),
-       (2, 4),
-       (3, 5),
-       (4, 2),
-       (5, 1);
+insert into requirements (task_id, consumable_type_id, required_quantity)
+values (2, 1, 1),
+       (2, 2, 4),
+       (1, 3, 5),
+       (1, 4, 2),
+       (4, 5, 1);
 
-insert into tasks_requirements
-values (1, 3),
-       (1, 4),
-       (2, 1),
-       (2, 2),
-       (4, 5);
 
 --changeset gznznzjsn:fulfill-employees
 insert into employees (name, specialization_id)

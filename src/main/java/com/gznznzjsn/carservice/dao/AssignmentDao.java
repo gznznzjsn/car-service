@@ -1,14 +1,20 @@
 package com.gznznzjsn.carservice.dao;
 
 import com.gznznzjsn.carservice.domain.carservice.Assignment;
+import lombok.SneakyThrows;
 
-import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 public interface AssignmentDao {
 
-    Assignment createAssignment(Long orderId, LocalDateTime arrivalTime, Assignment assignment);
 
-    Assignment acceptAssignment(Assignment assignment);
+    @SneakyThrows
+    List<Assignment> readAssignments(Long orderId);
 
-    Assignment updateAssignment(Assignment createdAssignment);
+    void updateAssignment(Assignment createdAssignment);
+
+    void createAssignment(Assignment assignment);
+
+    Optional<Assignment> readAssignment(Long assignmentId);
 }

@@ -8,20 +8,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
+
     private final TaskDao taskDao;
 
     @Override
     @Transactional(readOnly = true)
     public Task readTask(Long id) {
-        Optional<Task> optionalTask = taskDao.readTask(id);
-        if (optionalTask.isEmpty()) {
-            throw new ResourceNotFoundException("Task with id=" + id + " not found!");
-        }
-        return optionalTask.get();
+        return taskDao.readTask(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task with id=" + id + " not found!"));
+
     }
 }

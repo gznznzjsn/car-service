@@ -2,36 +2,84 @@ package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.OrderDao;
 import com.gznznzjsn.carservice.domain.carservice.Order;
+import com.gznznzjsn.carservice.domain.carservice.User;
 import com.gznznzjsn.carservice.domain.carservice.enums.OrderStatus;
 import com.gznznzjsn.carservice.util.ConnectionPool;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public class OrderDaoImpl implements OrderDao {
     @Override
     @SneakyThrows
-    public Order createOrder(Long userId, Order order) {
-        String INSERT_ORDER_QUERY = """
-                INSERT INTO orders (status_id,user_id, created_at,arrival_time)
-                VALUES ((SELECT status_id FROM statuses WHERE value=?),?,?,?);
+    public void createOrder(Order order) {
+        String INSERT_ORDER = """
+                INSERT INTO orders ( status_id, arrival_time, created_at,  user_id)
+                VALUES ((SELECT status_id FROM statuses WHERE value=?),?,now(),?);
                 """;
-        order.setStatus(OrderStatus.UNDER_CONSIDERATION);
-        order.setCreatedAt(LocalDateTime.now());
         try (Connection conn = ConnectionPool.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(INSERT_ORDER_QUERY, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = conn.prepareStatement(INSERT_ORDER, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, order.getStatus().name());
-            stmt.setLong(2, userId);
-            stmt.setObject(3, order.getCreatedAt());
-            stmt.setObject(4, order.getArrivalTime());
+            stmt.setObject(2, order.getArrivalTime());
+            stmt.setLong(3, order.getUser().getId());
             stmt.executeUpdate();
             ResultSet keys = stmt.getGeneratedKeys();
             keys.next();
             order.setId(keys.getLong(1));
         }
-        return order;
+    }
+
+    @Override
+    @SneakyThrows
+    public Optional<Order> readOrder(Long orderId) {
+        String FETCH_BY_ID = """
+                SELECT value, arrival_time,created_at,finished_at, user_id, name
+                FROM orders JOIN statuses USING (status_id)
+                JOIN users USING (user_id)
+                WHERE order_id = ?;
+                """;
+
+        try (Connection conn = ConnectionPool.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID);
+            stmt.setLong(1, orderId);
+            ResultSet rs = stmt.executeQuery();
+            if (!rs.next()) {
+                return Optional.empty();
+            }
+            Timestamp finishedAt = rs.getTimestamp(4);
+            return Optional.of(Order.builder()
+                    .id(orderId)
+                    .status(OrderStatus.valueOf(rs.getString(1)))
+                    .arrivalTime(rs.getTimestamp(2).toLocalDateTime())
+                    .createdAt(rs.getTimestamp(3).toLocalDateTime())
+                    .finishedAt(Objects.isNull(finishedAt) ? null : finishedAt.toLocalDateTime())
+                    .user(User.builder()
+                            .id(rs.getLong(5))
+                            .name(rs.getString(6))
+                            .build())
+                    .build());
+
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public void updateOrder(Order order) {
+        String UPDATE = """
+                UPDATE orders
+                SET status_id=(SELECT status_id FROM statuses WHERE value=?),
+                arrival_time=?;
+                    """;
+
+        try (Connection conn = ConnectionPool.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(UPDATE);
+            stmt.setString(1, order.getStatus().name());
+            stmt.setObject(2, order.getArrivalTime());
+            stmt.executeUpdate();
+        }
     }
 }

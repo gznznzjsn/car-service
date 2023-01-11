@@ -10,10 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 public interface OrderMapper {
     @Mapping(target = "arrivalTime", source = "dto.arrivalTime")
-    @Mapping(target = "assignments", source = "dto.requestedAssignments")
     Order toEntity(OrderDto.Request.Create dto);
 
-    @Mapping(target = "precalculatedAssignments", source = "entity.assignments")
-    @Mapping(target = "finishTime", expression = "java(com.gznznzjsn.carservice.service.OrderService.calculateFinishTime(entity))")
+//    @Mapping(target = "finishTime", expression = "java(com.gznznzjsn.carservice.service.OrderService.calculateFinishTime(entity))")
     OrderDto.Response.ReadPrecalculated toDto(Order entity);
 }

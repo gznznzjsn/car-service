@@ -1,14 +1,12 @@
 package com.gznznzjsn.carservice.service;
 
 import com.gznznzjsn.carservice.domain.carservice.Assignment;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.List;
 
 public interface AssignmentService {
-
-
-    Assignment createAssignment(Long orderId, LocalDateTime arrivalTime, Assignment assignment);
 
     static BigDecimal calculateTotalCost(Assignment assignment) {
         return assignment.getTasks().stream()
@@ -16,5 +14,14 @@ public interface AssignmentService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    Assignment acceptAssignment(Assignment assignment);
+    Assignment createAssignment(Assignment assignment);
+
+    List<Assignment> sendAssignmentsAndOrder(Long orderId);
+
+    @Transactional
+    Assignment updateAssignment(Assignment assignment);
+
+    Assignment getAssignment(Long assignmentId);
+
+    List<Assignment> getAssignments(Long orderId);
 }

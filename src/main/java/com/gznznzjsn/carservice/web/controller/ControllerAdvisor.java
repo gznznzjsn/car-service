@@ -10,17 +10,17 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleResourceNotFoundException(
-            ResourceNotFoundException e) {
-        return e.getMessage();
-    }
-
-    @ExceptionHandler(NotEnoughResources.class)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String handleCityNotEnoughResourcesException(
-            ResourceNotFoundException e) {
-        return e.getMessage();
-    }
+//    @ExceptionHandler(ResourceNotFoundException.class)
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    public String handleResourceNotFoundException(
+//            ResourceNotFoundException e) {
+//        return e.getMessage();
+//    }
+//
+//    @ExceptionHandler(NotEnoughResources.class)
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public String handleCityNotEnoughResourcesException(
+//            ResourceNotFoundException e) {
+//        return e.getMessage();
+//    }
 }

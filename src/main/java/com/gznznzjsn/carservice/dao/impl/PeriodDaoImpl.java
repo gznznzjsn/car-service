@@ -24,7 +24,7 @@ public class PeriodDaoImpl implements PeriodDao {
                 FROM periods JOIN employees USING (employee_id)
                 JOIN specializations USING (specialization_id)
                 WHERE value = ?
-                AND period_date > (?::date)
+                AND period_date > ?::date
                 AND (period_end- period_start)>= ?
                 ORDER BY period_date,period_start
                 LIMIT 1
@@ -51,6 +51,7 @@ public class PeriodDaoImpl implements PeriodDao {
                             .specialization(Specialization.valueOf(rs.getString(7)))
                             .build())
                     .build();
+            System.out.println(period);
             if (period.getEnd() - period.getStart() == totalDuration) {
                 String DELETE_PERIOD_QUERY = """
                         DELETE FROM periods WHERE period_id = ?

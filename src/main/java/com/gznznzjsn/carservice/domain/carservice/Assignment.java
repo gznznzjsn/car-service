@@ -12,7 +12,9 @@ import java.util.List;
 @Data
 @Builder
 public class Assignment {
+
     private Long id;
+    private Order order;
     private AssignmentStatus status;
     private Specialization specialization;
     private LocalDateTime startTime;
