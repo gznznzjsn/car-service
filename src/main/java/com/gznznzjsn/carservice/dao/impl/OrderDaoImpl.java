@@ -5,6 +5,7 @@ import com.gznznzjsn.carservice.domain.carservice.Order;
 import com.gznznzjsn.carservice.domain.carservice.User;
 import com.gznznzjsn.carservice.domain.carservice.enums.OrderStatus;
 import com.gznznzjsn.carservice.util.ConnectionPool;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class OrderDaoImpl implements OrderDao {
+
+    private final ConnectionPool connectionPool;
+
     @Override
     @SneakyThrows
     public void createOrder(Order order) {
@@ -21,8 +26,8 @@ public class OrderDaoImpl implements OrderDao {
                 INSERT INTO orders ( status_id, arrival_time, created_at,  user_id)
                 VALUES ((SELECT status_id FROM statuses WHERE value=?),?,now(),?);
                 """;
-        try (Connection conn = ConnectionPool.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(INSERT_ORDER, Statement.RETURN_GENERATED_KEYS);
+        Connection conn = connectionPool.getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(INSERT_ORDER, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, order.getStatus().name());
             stmt.setObject(2, order.getArrivalTime());
             stmt.setLong(3, order.getUser().getId());
@@ -43,8 +48,8 @@ public class OrderDaoImpl implements OrderDao {
                 WHERE order_id = ?;
                 """;
 
-        try (Connection conn = ConnectionPool.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID);
+        Connection conn = connectionPool.getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID)) {
             stmt.setLong(1, orderId);
             ResultSet rs = stmt.executeQuery();
             if (!rs.next()) {
@@ -75,8 +80,8 @@ public class OrderDaoImpl implements OrderDao {
                 arrival_time=?;
                     """;
 
-        try (Connection conn = ConnectionPool.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(UPDATE);
+        Connection conn = connectionPool.getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(UPDATE)) {
             stmt.setString(1, order.getStatus().name());
             stmt.setObject(2, order.getArrivalTime());
             stmt.executeUpdate();

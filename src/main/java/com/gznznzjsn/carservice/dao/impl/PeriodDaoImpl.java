@@ -5,6 +5,7 @@ import com.gznznzjsn.carservice.domain.carservice.Employee;
 import com.gznznzjsn.carservice.domain.carservice.Period;
 import com.gznznzjsn.carservice.domain.carservice.enums.Specialization;
 import com.gznznzjsn.carservice.util.ConnectionPool;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +16,11 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class PeriodDaoImpl implements PeriodDao {
+
+    private final ConnectionPool connectionPool;
+
     @Override
     @SneakyThrows
     public Optional<Period> erasePeriod(LocalDateTime arrivalTime, Specialization specialization, int totalDuration) {
@@ -31,8 +36,9 @@ public class PeriodDaoImpl implements PeriodDao {
                 ;
                 """;
 
-        try (Connection conn = ConnectionPool.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(FETCH_PERIOD_QUERY);
+        Connection conn = connectionPool.getConnection();
+        Period period;
+        try (PreparedStatement stmt = conn.prepareStatement(FETCH_PERIOD_QUERY)) {
             stmt.setString(1, specialization.name());
             stmt.setObject(2, arrivalTime);
             stmt.setInt(3, totalDuration);
@@ -40,7 +46,7 @@ public class PeriodDaoImpl implements PeriodDao {
             if (!rs.next()) {
                 return Optional.empty();
             }
-            Period period = Period.builder()
+            period = Period.builder()
                     .id(rs.getLong(1))
                     .date(new java.sql.Date(rs.getDate(2).getTime()).toLocalDate())
                     .start(rs.getInt(3))
@@ -51,25 +57,28 @@ public class PeriodDaoImpl implements PeriodDao {
                             .specialization(Specialization.valueOf(rs.getString(7)))
                             .build())
                     .build();
-            System.out.println(period);
-            if (period.getEnd() - period.getStart() == totalDuration) {
-                String DELETE_PERIOD_QUERY = """
-                        DELETE FROM periods WHERE period_id = ?
-                            """;
-                stmt = conn.prepareStatement(DELETE_PERIOD_QUERY);
-                stmt.setLong(1, period.getId());
-                stmt.executeUpdate();
-            } else {
-                String UPDATE_PERIOD_QUERY = """
-                        update periods set period_start=? where period_id=?
-                        """;
-                stmt = conn.prepareStatement(UPDATE_PERIOD_QUERY);
-                stmt.setInt(1, period.getStart() + totalDuration);
-                stmt.setLong(2, period.getId());
-                stmt.executeUpdate();
-                period.setEnd(period.getStart() + totalDuration);
-            }
-            return Optional.of(period);
         }
+        System.out.println(period);
+        if (period.getEnd() - period.getStart() == totalDuration) {
+            String DELETE_PERIOD_QUERY = """
+                    DELETE FROM periods WHERE period_id = ?
+                        """;
+            try (PreparedStatement stmt1 = conn.prepareStatement(DELETE_PERIOD_QUERY)) {
+                stmt1.setLong(1, period.getId());
+                stmt1.executeUpdate();
+            }
+        } else {
+            String UPDATE_PERIOD_QUERY = """
+                    update periods set period_start=? where period_id=?
+                    """;
+            try (PreparedStatement stmt2 = conn.prepareStatement(UPDATE_PERIOD_QUERY)) {
+                stmt2.setInt(1, period.getStart() + totalDuration);
+                stmt2.setLong(2, period.getId());
+                stmt2.executeUpdate();
+            }
+            period.setEnd(period.getStart() + totalDuration);
+        }
+        return Optional.of(period);
+
     }
 }

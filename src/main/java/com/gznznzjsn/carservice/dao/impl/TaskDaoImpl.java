@@ -4,6 +4,7 @@ import com.gznznzjsn.carservice.dao.TaskDao;
 import com.gznznzjsn.carservice.domain.carservice.Task;
 import com.gznznzjsn.carservice.domain.carservice.enums.Specialization;
 import com.gznznzjsn.carservice.util.ConnectionPool;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,11 @@ import java.sql.ResultSet;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class TaskDaoImpl implements TaskDao {
+
+    private final ConnectionPool connectionPool;
+
 
     @Override
     @SneakyThrows
@@ -23,8 +28,8 @@ public class TaskDaoImpl implements TaskDao {
                 FROM tasks JOIN specializations USING (specialization_id)
                 WHERE task_id = ?;
                 """;
-        try (Connection conn = ConnectionPool.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID_QUERY);
+        Connection conn = connectionPool.getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID_QUERY)) {
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
             if (!rs.next()) {

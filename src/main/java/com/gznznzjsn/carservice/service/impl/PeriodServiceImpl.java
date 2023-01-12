@@ -7,6 +7,7 @@ import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
 import com.gznznzjsn.carservice.service.PeriodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -18,6 +19,7 @@ public class PeriodServiceImpl implements PeriodService {
     private final PeriodDao periodDao;
 
     @Override
+    @Transactional
     public Period eraseAppropriatePeriod(LocalDateTime arrivalTime, Specialization specialization, int totalDuration) {
         Optional<Period> optionalPeriod = periodDao.erasePeriod(arrivalTime, specialization, totalDuration);
         if (optionalPeriod.isEmpty()) {

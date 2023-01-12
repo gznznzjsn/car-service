@@ -3,6 +3,7 @@ package com.gznznzjsn.carservice.dao.impl;
 import com.gznznzjsn.carservice.dao.UserDao;
 import com.gznznzjsn.carservice.domain.carservice.User;
 import com.gznznzjsn.carservice.util.ConnectionPool;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,10 @@ import java.sql.ResultSet;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class UserDaoImpl implements UserDao {
+
+    private final ConnectionPool connectionPool;
 
     @Override
     @SneakyThrows
@@ -23,8 +27,8 @@ public class UserDaoImpl implements UserDao {
                 WHERE user_id = ?;
                 """;
 
-        try (Connection conn = ConnectionPool.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID);
+        Connection conn = connectionPool.getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID)) {
             stmt.setLong(1, userId);
             ResultSet rs = stmt.executeQuery();
             if (!rs.next()) {

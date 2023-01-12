@@ -4,6 +4,7 @@ import com.gznznzjsn.carservice.dao.EmployeeDao;
 import com.gznznzjsn.carservice.domain.carservice.Employee;
 import com.gznznzjsn.carservice.domain.carservice.enums.Specialization;
 import com.gznznzjsn.carservice.util.ConnectionPool;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +17,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class EmployeeDaoImpl implements EmployeeDao {
+
+    private final ConnectionPool connectionPool;
 
     @Override
     @SneakyThrows
@@ -26,8 +30,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
                 JOIN specializations USING(specialization_id);
                 """;
         List<Employee> allEmployees = new ArrayList<>();
-        try (Connection conn = ConnectionPool.getConnection()) {
-            Statement stmt = conn.createStatement();
+        Connection conn = connectionPool.getConnection();
+        try (Statement stmt = conn.createStatement()) {
             ResultSet rs = stmt.executeQuery(FETCH_ALL_QUERY);
             while (rs.next()) {
                 allEmployees.add(Employee.builder()
@@ -50,8 +54,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
                                 );
                 """;
 
-        try (Connection conn = ConnectionPool.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(ADD_EMPLOYEE_QUERY, Statement.RETURN_GENERATED_KEYS);
+        Connection conn = connectionPool.getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(ADD_EMPLOYEE_QUERY, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, employee.getName());
             stmt.setString(2, employee.getSpecialization().name());
             stmt.executeUpdate();
@@ -71,8 +75,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
                 WHERE employee_id = ?;
                 """;
 
-        try (Connection conn = ConnectionPool.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID_QUERY);
+        Connection conn = connectionPool.getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID_QUERY)) {
             stmt.setLong(1, employeeId);
             ResultSet rs = stmt.executeQuery();
             if (!rs.next()) {
@@ -88,7 +92,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
 
     }
-
 
 
 }

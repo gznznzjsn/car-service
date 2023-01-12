@@ -3,6 +3,7 @@ package com.gznznzjsn.carservice.service.impl;
 import com.gznznzjsn.carservice.dao.AssignmentDao;
 import com.gznznzjsn.carservice.domain.carservice.Assignment;
 import com.gznznzjsn.carservice.domain.carservice.Period;
+import com.gznznzjsn.carservice.domain.carservice.Task;
 import com.gznznzjsn.carservice.domain.carservice.enums.AssignmentStatus;
 import com.gznznzjsn.carservice.domain.carservice.enums.OrderStatus;
 import com.gznznzjsn.carservice.domain.exception.IllegalActionException;
@@ -54,10 +55,10 @@ public class AssignmentServiceImpl implements AssignmentService {
             if (!a.getStatus().equals(AssignmentStatus.NOT_SENT)) {
                 throw new IllegalActionException("You can't send assignment with id = " + a.getId() + ", because it's already sent!");
             }
-            int totalDuration = 3;
-//           int totalDuration = a.getTasks().stream()
-//                    .map(Task::getDuration)
-//                    .reduce(0, Integer::sum);
+//            int totalDuration = 3;
+            int totalDuration = a.getTasks().stream()
+                    .map(Task::getDuration)
+                    .reduce(0, Integer::sum);
             Period appropriatePeriod = periodService.eraseAppropriatePeriod(a.getOrder().getArrivalTime(), a.getSpecialization(), totalDuration);
             Assignment assignmentToUpdate = Assignment.builder()
                     .id(a.getId())
@@ -106,6 +107,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Assignment getAssignment(Long assignmentId) {
         return assignmentDao.readAssignment(assignmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Assignment with id = " + assignmentId + " doesn't exist!"));
