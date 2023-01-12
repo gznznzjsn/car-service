@@ -1,4 +1,4 @@
-package com.gznznzjsn.carservice.domain.carservice.enums;
+package com.gznznzjsn.carservice.domain.carservice.assignment;
 
 public enum AssignmentStatus {
     NOT_SENT,

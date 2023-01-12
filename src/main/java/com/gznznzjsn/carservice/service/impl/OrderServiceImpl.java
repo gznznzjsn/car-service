@@ -1,8 +1,8 @@
 package com.gznznzjsn.carservice.service.impl;
 
 import com.gznznzjsn.carservice.dao.OrderDao;
-import com.gznznzjsn.carservice.domain.carservice.Order;
-import com.gznznzjsn.carservice.domain.carservice.enums.OrderStatus;
+import com.gznznzjsn.carservice.domain.carservice.order.Order;
+import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
 import com.gznznzjsn.carservice.domain.exception.IllegalActionException;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
 import com.gznznzjsn.carservice.service.OrderService;

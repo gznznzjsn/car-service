@@ -2,7 +2,7 @@ package com.gznznzjsn.carservice.service.impl;
 
 import com.gznznzjsn.carservice.dao.PeriodDao;
 import com.gznznzjsn.carservice.domain.carservice.Period;
-import com.gznznzjsn.carservice.domain.carservice.enums.Specialization;
+import com.gznznzjsn.carservice.domain.carservice.Specialization;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
 import com.gznznzjsn.carservice.service.PeriodService;
 import lombok.RequiredArgsConstructor;

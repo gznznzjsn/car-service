@@ -1,12 +1,14 @@
 package com.gznznzjsn.carservice.web.controller;
 
-import com.gznznzjsn.carservice.domain.carservice.Assignment;
+import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
 import com.gznznzjsn.carservice.domain.carservice.Employee;
 import com.gznznzjsn.carservice.service.AssignmentService;
 import com.gznznzjsn.carservice.service.EmployeeService;
+import com.gznznzjsn.carservice.web.dto.AssignmentDto;
 import com.gznznzjsn.carservice.web.dto.EmployeeDto;
 import com.gznznzjsn.carservice.web.dto.mapper.AssignmentMapper;
 import com.gznznzjsn.carservice.web.dto.mapper.EmployeeMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,36 +18,39 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/employees")
 public class EmployeeController {
+
     private final EmployeeMapper employeeMapper;
     private final AssignmentMapper assignmentMapper;
     private final EmployeeService employeeService;
     private final AssignmentService assignmentService;
 
     @GetMapping
-    public List<EmployeeDto.Response.Read> getAllEmployees() {
+    public List<EmployeeDto.Response.@Valid Read> getAllEmployees() {
         return employeeService.readAllEmployees().stream()
-                .map(employeeMapper::toDto)
+                .map(employeeMapper::toReadDto)
                 .toList();
     }
 
     @PostMapping
-    public EmployeeDto.Response.Read createEmployee(@RequestBody EmployeeDto.Request.Create employeeDto) {
+    public @Valid EmployeeDto.Response.Read createEmployee(@Valid @RequestBody EmployeeDto.Request.Create employeeDto) {
         Employee employee = employeeMapper.toEntity(employeeDto);
         Employee returnedEmployee = employeeService.createEmployee(employee);
-        return employeeMapper.toDto(returnedEmployee);
+        return employeeMapper.toReadDto(returnedEmployee);
     }
 
     @GetMapping("/{id}")
-    public EmployeeDto.Response.Read getEmployee(@PathVariable("id") Long employeeId) {
+    public @Valid EmployeeDto.Response.Read getEmployee(@PathVariable("id") Long employeeId) {
         Employee returnedEmployee = employeeService.getEmployee(employeeId);
-        return employeeMapper.toDto(returnedEmployee);
+        return employeeMapper.toReadDto(returnedEmployee);
     }
 
     @GetMapping("/{employeeId}/assignments/{assignmentId}")
-    public Assignment getEmployee(@PathVariable Long employeeId, @PathVariable Long assignmentId) {
+    public @Valid AssignmentDto.Response.Read getAssignment(
+            @PathVariable Long employeeId,
+            @PathVariable Long assignmentId) {
         //todo check employeeId
         Assignment assignment = assignmentService.getAssignment(assignmentId);
-        return assignment;
+        return assignmentMapper.toReadDto(assignment);
     }
 
 //    @PatchMapping("/{id}/assignments/{assignment_id}")

@@ -1,9 +1,7 @@
 package com.gznznzjsn.carservice.dao;
 
 import com.gznznzjsn.carservice.domain.carservice.Employee;
-import com.gznznzjsn.carservice.domain.carservice.enums.Specialization;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 

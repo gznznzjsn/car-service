@@ -1,6 +1,5 @@
 package com.gznznzjsn.carservice.domain.carservice;
 
-import com.gznznzjsn.carservice.domain.carservice.enums.Specialization;
 import lombok.Builder;
 import lombok.Data;
 

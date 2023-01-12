@@ -1,7 +1,9 @@
-package com.gznznzjsn.carservice.domain.carservice;
+package com.gznznzjsn.carservice.domain.carservice.assignment;
 
-import com.gznznzjsn.carservice.domain.carservice.enums.AssignmentStatus;
-import com.gznznzjsn.carservice.domain.carservice.enums.Specialization;
+import com.gznznzjsn.carservice.domain.carservice.Employee;
+import com.gznznzjsn.carservice.domain.carservice.order.Order;
+import com.gznznzjsn.carservice.domain.carservice.Task;
+import com.gznznzjsn.carservice.domain.carservice.Specialization;
 import lombok.Builder;
 import lombok.Data;
 

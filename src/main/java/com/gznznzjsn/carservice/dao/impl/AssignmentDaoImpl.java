@@ -2,9 +2,11 @@ package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.AssignmentDao;
 import com.gznznzjsn.carservice.domain.carservice.*;
-import com.gznznzjsn.carservice.domain.carservice.enums.AssignmentStatus;
-import com.gznznzjsn.carservice.domain.carservice.enums.OrderStatus;
-import com.gznznzjsn.carservice.domain.carservice.enums.Specialization;
+import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
+import com.gznznzjsn.carservice.domain.carservice.assignment.AssignmentStatus;
+import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
+import com.gznznzjsn.carservice.domain.carservice.Specialization;
+import com.gznznzjsn.carservice.domain.carservice.order.Order;
 import com.gznznzjsn.carservice.util.ConnectionPool;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -57,7 +59,32 @@ public class AssignmentDaoImpl implements AssignmentDao {
             }
 
         }
+        addTasks(assignment);
+    }
 
+    @SneakyThrows
+    private void addTasks(Assignment assignment) {
+        String FETCH_TASKS = """
+                SELECT tasks.task_id, name, duration, cost_per_hour, value FROM assignments_tasks
+                JOIN tasks USING (task_id)
+                JOIN specializations USING (specialization_id)
+                WHERE assignment_id=?
+                    """;
+        Connection conn = connectionPool.getConnection();
+        assignment.setTasks(new ArrayList<>());
+        try (PreparedStatement fetchStmt = conn.prepareStatement(FETCH_TASKS)) {
+            fetchStmt.setLong(1, assignment.getId());
+            ResultSet rs = fetchStmt.executeQuery();
+            while (rs.next()) {
+                assignment.getTasks().add(Task.builder()
+                        .id(rs.getLong(1))
+                        .name(rs.getString(2))
+                        .duration(rs.getInt(3))
+                        .costPerHour(rs.getBigDecimal(4))
+                        .requiredSpecialization(Specialization.valueOf(rs.getString(5)))
+                        .build());
+            }
+        }
     }
 
     @Override
@@ -91,7 +118,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
             }
             Timestamp finishedAt = rs.getTimestamp(5);
             Timestamp startTime = rs.getTimestamp(9);
-            return Optional.of(Assignment.builder()
+            Assignment assignment = Assignment.builder()
                     .id(assignmentId)
                     .order(Order.builder()
                             .id(rs.getLong(1))
@@ -115,7 +142,9 @@ public class AssignmentDaoImpl implements AssignmentDao {
                     .status(AssignmentStatus.valueOf(rs.getString(14)))
                     .userCommentary(rs.getString(15))
                     .employeeCommentary(rs.getString(16))
-                    .build());
+                    .build();
+            addTasks(assignment);
+            return Optional.of(assignment);
         }
 
     }
@@ -176,6 +205,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
                         .employeeCommentary(rs.getString(16))
                         .id(rs.getLong(17))
                         .build();
+                addTasks(assignment);
                 assignmentList.add(assignment);
             }
             return assignmentList;

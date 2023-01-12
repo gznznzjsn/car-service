@@ -1,9 +1,9 @@
 package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.OrderDao;
-import com.gznznzjsn.carservice.domain.carservice.Order;
+import com.gznznzjsn.carservice.domain.carservice.order.Order;
 import com.gznznzjsn.carservice.domain.carservice.User;
-import com.gznznzjsn.carservice.domain.carservice.enums.OrderStatus;
+import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
 import com.gznznzjsn.carservice.util.ConnectionPool;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

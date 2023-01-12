@@ -1,11 +1,11 @@
 package com.gznznzjsn.carservice.service.impl;
 
 import com.gznznzjsn.carservice.dao.AssignmentDao;
-import com.gznznzjsn.carservice.domain.carservice.Assignment;
+import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
 import com.gznznzjsn.carservice.domain.carservice.Period;
 import com.gznznzjsn.carservice.domain.carservice.Task;
-import com.gznznzjsn.carservice.domain.carservice.enums.AssignmentStatus;
-import com.gznznzjsn.carservice.domain.carservice.enums.OrderStatus;
+import com.gznznzjsn.carservice.domain.carservice.assignment.AssignmentStatus;
+import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
 import com.gznznzjsn.carservice.domain.exception.IllegalActionException;
 import com.gznznzjsn.carservice.domain.exception.NotEnoughResources;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
@@ -55,6 +55,7 @@ public class AssignmentServiceImpl implements AssignmentService {
             if (!a.getStatus().equals(AssignmentStatus.NOT_SENT)) {
                 throw new IllegalActionException("You can't send assignment with id = " + a.getId() + ", because it's already sent!");
             }
+            System.out.println(a);
 //            int totalDuration = 3;
             int totalDuration = a.getTasks().stream()
                     .map(Task::getDuration)

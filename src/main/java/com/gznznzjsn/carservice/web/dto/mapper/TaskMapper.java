@@ -9,4 +9,5 @@ import org.springframework.stereotype.Component;
 @Component
 public interface TaskMapper {
     Task toEntity(TaskDto.Request.AddToAssignment dto);
+    TaskDto.Response.Read toReadDto(Task entity);
 }

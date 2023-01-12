@@ -1,6 +1,6 @@
 package com.gznznzjsn.carservice.service;
 
-import com.gznznzjsn.carservice.domain.carservice.Order;
+import com.gznznzjsn.carservice.domain.carservice.order.Order;
 
 public interface OrderService {
     Order createOrder(Order order);

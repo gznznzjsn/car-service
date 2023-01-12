@@ -3,7 +3,7 @@ package com.gznznzjsn.carservice.dao.impl;
 import com.gznznzjsn.carservice.dao.PeriodDao;
 import com.gznznzjsn.carservice.domain.carservice.Employee;
 import com.gznznzjsn.carservice.domain.carservice.Period;
-import com.gznznzjsn.carservice.domain.carservice.enums.Specialization;
+import com.gznznzjsn.carservice.domain.carservice.Specialization;
 import com.gznznzjsn.carservice.util.ConnectionPool;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

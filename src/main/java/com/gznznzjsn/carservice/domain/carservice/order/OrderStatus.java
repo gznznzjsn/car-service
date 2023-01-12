@@ -1,4 +1,4 @@
-package com.gznznzjsn.carservice.domain.carservice.enums;
+package com.gznznzjsn.carservice.domain.carservice.order;
 
 public enum OrderStatus {
     NOT_SENT,

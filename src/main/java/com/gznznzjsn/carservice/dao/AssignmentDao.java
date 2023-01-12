@@ -1,7 +1,6 @@
 package com.gznznzjsn.carservice.dao;
 
-import com.gznznzjsn.carservice.domain.carservice.Assignment;
-import lombok.SneakyThrows;
+import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +8,6 @@ import java.util.Optional;
 public interface AssignmentDao {
 
 
-    @SneakyThrows
     List<Assignment> readAssignments(Long orderId);
 
     void updateAssignment(Assignment createdAssignment);

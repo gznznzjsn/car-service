@@ -1,4 +1,4 @@
-package com.gznznzjsn.carservice.domain.carservice.enums;
+package com.gznznzjsn.carservice.domain.carservice;
 
 public enum Specialization {
     CLEANER,

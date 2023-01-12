@@ -1,6 +1,6 @@
 package com.gznznzjsn.carservice.dao;
 
-import com.gznznzjsn.carservice.domain.carservice.Order;
+import com.gznznzjsn.carservice.domain.carservice.order.Order;
 
 import java.util.Optional;
 
