@@ -12,4 +12,5 @@ public interface EmployeeDao {
 
     Optional<Employee> readEmployee(Long employeeId);
 
+    void deleteEmployee(Long employeeId);
 }

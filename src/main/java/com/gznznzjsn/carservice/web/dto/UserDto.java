@@ -7,6 +7,15 @@ import org.hibernate.validator.constraints.Length;
 public enum UserDto {
     ;
 
+    public enum Request {
+        ;
+
+        public record AddToOrder(
+                @NotNull(message = "Id is mandatory!")
+                Long id) {
+        }
+    }
+
     public enum Response {
         ;
 

@@ -5,6 +5,7 @@ import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
 import com.gznznzjsn.carservice.domain.carservice.Period;
 import com.gznznzjsn.carservice.domain.carservice.Task;
 import com.gznznzjsn.carservice.domain.carservice.assignment.AssignmentStatus;
+import com.gznznzjsn.carservice.domain.carservice.order.Order;
 import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
 import com.gznznzjsn.carservice.domain.exception.IllegalActionException;
 import com.gznznzjsn.carservice.domain.exception.NotEnoughResourcesException;
@@ -31,6 +32,9 @@ public class AssignmentServiceImpl implements AssignmentService {
     @Override
     @Transactional
     public Assignment createAssignment(Assignment assignment) {
+
+        Order order = orderService.getOrder(assignment.getOrder().getId());
+        assignment.setOrder(order);
         if (!assignment.getOrder().getStatus().equals(OrderStatus.NOT_SENT)) {
             throw new IllegalActionException("You can't add assignment to already sent order!");
         }
@@ -56,7 +60,6 @@ public class AssignmentServiceImpl implements AssignmentService {
                 throw new IllegalActionException("You can't send assignment with id = " + a.getId() + ", because it's already sent!");
             }
             System.out.println(a);
-//            int totalDuration = 3;
             int totalDuration = a.getTasks().stream()
                     .map(Task::getDuration)
                     .reduce(0, Integer::sum);

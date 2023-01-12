@@ -10,4 +10,6 @@ import org.springframework.stereotype.Component;
 public interface UserMapper {
 
     UserDto.Response.Read toReadDto(User entity);
+
+    User toEntity(UserDto.Request.AddToOrder dto);
 }

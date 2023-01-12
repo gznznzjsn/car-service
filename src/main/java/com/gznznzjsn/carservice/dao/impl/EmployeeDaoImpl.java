@@ -93,5 +93,19 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     }
 
-
+    @Override
+    @SneakyThrows
+    public void deleteEmployee(Long employeeId) {
+        String DELETE_BY_ID = """
+                DELETE FROM employees WHERE employee_id=?;
+                """;
+        Connection conn = connectionPool.getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(DELETE_BY_ID)) {
+            stmt.setLong(1, employeeId);
+            stmt.executeUpdate();
+        }
+    }
 }
+
+
+

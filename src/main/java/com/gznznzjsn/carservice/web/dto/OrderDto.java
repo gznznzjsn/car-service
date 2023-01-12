@@ -16,8 +16,19 @@ public enum OrderDto {
         ;
 
         public record Create(
+
+                @NotNull(message = "User must be attached to order!")
+                @Valid
+                UserDto.Request.AddToOrder user,
+
                 @NotNull(message = "Arrival time must be set!")
                 LocalDateTime arrivalTime) {
+        }
+
+        public record AddToAssignment(
+                @NotNull(message = "Id is mandatory!")
+                Long id
+        ) {
         }
     }
 

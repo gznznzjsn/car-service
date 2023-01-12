@@ -11,10 +11,12 @@ public interface OrderMapper {
 
     Order toEntity(OrderDto.Request.Create dto);
 
-    //    @Mapping(target = "finishTime", expression = "java(com.gznznzjsn.carservice.service.OrderService.calculateFinishTime(entity))")
-    OrderDto.Response.ReadPrecalculated toDto(Order entity);
+//    //    @Mapping(target = "finishTime", expression = "java(com.gznznzjsn.carservice.service.OrderService.calculateFinishTime(entity))")
+//    OrderDto.Response.ReadPrecalculated toDto(Order entity);
 
     OrderDto.Response.Create toCreateDto(Order entity);
 
     OrderDto.Response.Read toReadDto(Order order);
+
+    Order toEntity(OrderDto.Request.AddToAssignment dto);
 }

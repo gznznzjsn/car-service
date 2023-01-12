@@ -18,7 +18,6 @@ public interface AssignmentService {
 
     List<Assignment> sendAssignmentsAndOrder(Long orderId);
 
-    @Transactional
     Assignment updateAssignment(Assignment assignment);
 
     Assignment getAssignment(Long assignmentId);

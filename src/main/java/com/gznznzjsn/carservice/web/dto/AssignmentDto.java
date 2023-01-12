@@ -21,6 +21,10 @@ public enum AssignmentDto {
 
         public record Create(
                 @NotNull(message = "Specialization is mandatory!")
+                @Valid
+                OrderDto.Request.AddToAssignment order,
+
+                @NotNull(message = "Specialization is mandatory!")
                 Specialization specialization,
 
                 @NotNull(message = "You need to add at least one task!")
@@ -32,6 +36,7 @@ public enum AssignmentDto {
         }
 
         public record Accept(
+
                 @Length(max = 255, message = "Too long commentary!")
                 String employeeCommentary,
 
@@ -51,6 +56,7 @@ public enum AssignmentDto {
         }
 
         public record Read(
+
                 @NotNull(message = "Id is mandatory!")
                 Long id,
 
@@ -83,6 +89,7 @@ public enum AssignmentDto {
         }
 
         public record Create(
+
                 @NotNull(message = "Id is mandatory!")
                 Long id,
 
@@ -104,6 +111,7 @@ public enum AssignmentDto {
         }
 
         public record Sent(
+
                 @NotNull(message = "Id is mandatory!")
                 Long id,
 

@@ -1,11 +1,13 @@
 package com.gznznzjsn.carservice.service.impl;
 
 import com.gznznzjsn.carservice.dao.OrderDao;
+import com.gznznzjsn.carservice.domain.carservice.User;
 import com.gznznzjsn.carservice.domain.carservice.order.Order;
 import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
 import com.gznznzjsn.carservice.domain.exception.IllegalActionException;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
 import com.gznznzjsn.carservice.service.OrderService;
+import com.gznznzjsn.carservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,10 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderDao orderDao;
+    private final UserService userService;
 
     @Override
     @Transactional
     public Order createOrder(Order order) {
+        User user = userService.getUser(order.getUser().getId());
+        order.setUser(user);
         order.setStatus(OrderStatus.NOT_SENT);
         orderDao.createOrder(order);
         return order;
