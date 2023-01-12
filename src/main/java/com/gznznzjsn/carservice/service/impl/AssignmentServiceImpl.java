@@ -7,7 +7,7 @@ import com.gznznzjsn.carservice.domain.carservice.Task;
 import com.gznznzjsn.carservice.domain.carservice.assignment.AssignmentStatus;
 import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
 import com.gznznzjsn.carservice.domain.exception.IllegalActionException;
-import com.gznznzjsn.carservice.domain.exception.NotEnoughResources;
+import com.gznznzjsn.carservice.domain.exception.NotEnoughResourcesException;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
 import com.gznznzjsn.carservice.service.AssignmentService;
 import com.gznznzjsn.carservice.service.OrderService;
@@ -35,7 +35,7 @@ public class AssignmentServiceImpl implements AssignmentService {
             throw new IllegalActionException("You can't add assignment to already sent order!");
         }
         if (assignment.getTasks().isEmpty()) {
-            throw new NotEnoughResources("You can't create assignment without tasks!");
+            throw new NotEnoughResourcesException("You can't create assignment without tasks!");
         }
         assignment.setStatus(AssignmentStatus.NOT_SENT);
         assignmentDao.createAssignment(assignment);
@@ -48,7 +48,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         orderService.sendOrder(orderId);
         List<Assignment> assignments = getAssignments(orderId);
         if (assignments.isEmpty()) {
-            throw new NotEnoughResources("You cannot send order without assignments!");
+            throw new NotEnoughResourcesException("You cannot send order without assignments!");
         }
         List<Assignment> updatedAssignments = new ArrayList<>();
         assignments.forEach(a -> {

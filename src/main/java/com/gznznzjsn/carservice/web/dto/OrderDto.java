@@ -15,7 +15,9 @@ public enum OrderDto {
     public enum Request {
         ;
 
-        public record Create(LocalDateTime arrivalTime) {
+        public record Create(
+                @NotNull(message = "Arrival time must be set!")
+                LocalDateTime arrivalTime) {
         }
     }
 
@@ -28,6 +30,7 @@ public enum OrderDto {
 
                 @NotNull(message = "Order must have at least one assignment!")
                 List<AssignmentDto.Response.ReadPrecalculated> precalculatedAssignments,
+
                 LocalDateTime finishTime) {
         }
 
