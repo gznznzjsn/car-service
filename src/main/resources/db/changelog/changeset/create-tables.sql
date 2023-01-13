@@ -1,7 +1,6 @@
 --liquibase formatted sql
 
---changeset gznznzjsn:create-schema
-create schema if not exists my_schema;
+
 
 --changeset gznznzjsn:create-users
     create table users
