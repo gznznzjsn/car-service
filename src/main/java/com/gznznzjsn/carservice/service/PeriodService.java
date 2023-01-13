@@ -6,5 +6,7 @@ import com.gznznzjsn.carservice.domain.carservice.Specialization;
 import java.time.LocalDateTime;
 
 public interface PeriodService {
-    Period eraseAppropriatePeriod(LocalDateTime arrivalTime, Specialization specialization, int totalDuration);
+
+    Period eraseAppropriate(LocalDateTime arrivalTime, Specialization specialization, int totalDuration);
+
 }

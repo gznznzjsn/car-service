@@ -6,10 +6,11 @@ import com.gznznzjsn.carservice.service.AssignmentService;
 import com.gznznzjsn.carservice.service.OrderService;
 import com.gznznzjsn.carservice.web.dto.AssignmentDto;
 import com.gznznzjsn.carservice.web.dto.OrderDto;
+import com.gznznzjsn.carservice.web.dto.group.OnCreateOrder;
 import com.gznznzjsn.carservice.web.dto.mapper.AssignmentListMapper;
 import com.gznznzjsn.carservice.web.dto.mapper.OrderMapper;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,36 +19,36 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/orders")
 public class OrderController {
+
     private final AssignmentService assignmentService;
     private final OrderService orderService;
     private final OrderMapper orderMapper;
     private final AssignmentListMapper assignmentListMapper;
 
 
-
     @PostMapping("/{orderId}/send")
-    public List<AssignmentDto.Response.@Valid Sent> sendAssignmentsAndOrder(
+    public List<AssignmentDto> sendWithAssignments(
             @PathVariable Long orderId
     ) {
-        List<Assignment> sentAssignments = assignmentService.sendAssignmentsAndOrder(orderId);
-        return assignmentListMapper.toSentDto(sentAssignments);
+        List<Assignment> sentAssignments = assignmentService.sendWithOrder(orderId);
+        return assignmentListMapper.toDto(sentAssignments);
     }
 
     @PostMapping
-    public @Valid OrderDto.Response.Create createOrder(
-            @Valid @RequestBody OrderDto.Request.Create orderDto
+    public OrderDto create(
+            @Validated(OnCreateOrder.class) @RequestBody OrderDto orderDto
     ) {
         Order order = orderMapper.toEntity(orderDto);
-        Order createdOrder = orderService.createOrder(order);
-        return orderMapper.toCreateDto(createdOrder);
+        Order createdOrder = orderService.create(order);
+        return orderMapper.toDto(createdOrder);
 
     }
 
     @GetMapping("/{orderId}")
-    public @Valid OrderDto.Response.Read getOrder(
+    public OrderDto get(
             @PathVariable Long orderId
     ) {
-        Order order = orderService.getOrder(orderId);
-        return orderMapper.toReadDto(order);
+        Order order = orderService.get(orderId);
+        return orderMapper.toDto(order);
     }
 }

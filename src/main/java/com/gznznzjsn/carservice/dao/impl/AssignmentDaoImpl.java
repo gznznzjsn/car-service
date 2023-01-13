@@ -7,7 +7,7 @@ import com.gznznzjsn.carservice.domain.carservice.assignment.AssignmentStatus;
 import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
 import com.gznznzjsn.carservice.domain.carservice.Specialization;
 import com.gznznzjsn.carservice.domain.carservice.order.Order;
-import com.gznznzjsn.carservice.util.ConnectionPool;
+import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
@@ -25,7 +25,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
 
     @Override
     @SneakyThrows
-    public void createAssignment(Assignment assignment) {
+    public void create(Assignment assignment) {
 
         String CREATE_ASSIGNMENT = """
                 INSERT INTO assignments (order_id, specialization_id, start_time, final_cost, employee_id, assignment_status_id, user_commentary, employee_commentary)
@@ -47,9 +47,10 @@ public class AssignmentDaoImpl implements AssignmentDao {
             createStmt.setString(7, assignment.getUserCommentary());
             createStmt.setString(8, assignment.getEmployeeCommentary());
             createStmt.executeUpdate();
-            ResultSet keys = createStmt.getGeneratedKeys();
-            keys.next();
-            assignment.setId(keys.getLong(1));
+            try (ResultSet keys = createStmt.getGeneratedKeys()) {
+                keys.next();
+                assignment.setId(keys.getLong(1));
+            }
         }
         try (PreparedStatement insertStmt = conn.prepareStatement(INSERT_TASKS_TO_ASSIGNMENT)) {
             for (Task t : assignment.getTasks()) {
@@ -74,22 +75,23 @@ public class AssignmentDaoImpl implements AssignmentDao {
         assignment.setTasks(new ArrayList<>());
         try (PreparedStatement fetchStmt = conn.prepareStatement(FETCH_TASKS)) {
             fetchStmt.setLong(1, assignment.getId());
-            ResultSet rs = fetchStmt.executeQuery();
-            while (rs.next()) {
-                assignment.getTasks().add(Task.builder()
-                        .id(rs.getLong(1))
-                        .name(rs.getString(2))
-                        .duration(rs.getInt(3))
-                        .costPerHour(rs.getBigDecimal(4))
-                        .requiredSpecialization(Specialization.valueOf(rs.getString(5)))
-                        .build());
+            try (ResultSet rs = fetchStmt.executeQuery()) {
+                while (rs.next()) {
+                    assignment.getTasks().add(Task.builder()
+                            .id(rs.getLong(1))
+                            .name(rs.getString(2))
+                            .duration(rs.getInt(3))
+                            .costPerHour(rs.getBigDecimal(4))
+                            .requiredSpecialization(Specialization.valueOf(rs.getString(5)))
+                            .build());
+                }
             }
         }
     }
 
     @Override
     @SneakyThrows
-    public Optional<Assignment> readAssignment(Long assignmentId) {
+    public Optional<Assignment> read(Long assignmentId) {
         String FETCH_BY_ID = """
                 SELECT order_id, st.value, arrival_time,created_at,finished_at, user_id,u.name,
                     sp.value,
@@ -112,46 +114,46 @@ public class AssignmentDaoImpl implements AssignmentDao {
         Connection conn = connectionPool.getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID)) {
             stmt.setLong(1, assignmentId);
-            ResultSet rs = stmt.executeQuery();
-            if (!rs.next()) {
-                return Optional.empty();
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+                Timestamp finishedAt = rs.getTimestamp(5);
+                Timestamp startTime = rs.getTimestamp(9);
+                Assignment assignment = Assignment.builder()
+                        .id(assignmentId)
+                        .order(Order.builder()
+                                .id(rs.getLong(1))
+                                .status(OrderStatus.valueOf(rs.getString(2)))
+                                .arrivalTime(rs.getTimestamp(3).toLocalDateTime())
+                                .createdAt(rs.getTimestamp(4).toLocalDateTime())
+                                .finishedAt(Objects.isNull(finishedAt) ? null : finishedAt.toLocalDateTime())
+                                .user(User.builder()
+                                        .id(rs.getLong(6))
+                                        .name(rs.getString(7))
+                                        .build())
+                                .build())
+                        .specialization(Specialization.valueOf(rs.getString(8)))
+                        .startTime(Objects.isNull(startTime) ? null : startTime.toLocalDateTime())
+                        .finalCost(rs.getBigDecimal(10))
+                        .employee(rs.getLong(11) == 0 ? null : Employee.builder()
+                                .id(rs.getLong(11))
+                                .name(rs.getString(12))
+                                .specialization(Specialization.valueOf(rs.getString(13)))
+                                .build())
+                        .status(AssignmentStatus.valueOf(rs.getString(14)))
+                        .userCommentary(rs.getString(15))
+                        .employeeCommentary(rs.getString(16))
+                        .build();
+                addTasks(assignment);
+                return Optional.of(assignment);
             }
-            Timestamp finishedAt = rs.getTimestamp(5);
-            Timestamp startTime = rs.getTimestamp(9);
-            Assignment assignment = Assignment.builder()
-                    .id(assignmentId)
-                    .order(Order.builder()
-                            .id(rs.getLong(1))
-                            .status(OrderStatus.valueOf(rs.getString(2)))
-                            .arrivalTime(rs.getTimestamp(3).toLocalDateTime())
-                            .createdAt(rs.getTimestamp(4).toLocalDateTime())
-                            .finishedAt(Objects.isNull(finishedAt) ? null : finishedAt.toLocalDateTime())
-                            .user(User.builder()
-                                    .id(rs.getLong(6))
-                                    .name(rs.getString(7))
-                                    .build())
-                            .build())
-                    .specialization(Specialization.valueOf(rs.getString(8)))
-                    .startTime(Objects.isNull(startTime) ? null : startTime.toLocalDateTime())
-                    .finalCost(rs.getBigDecimal(10))
-                    .employee(rs.getLong(11) == 0 ? null : Employee.builder()
-                            .id(rs.getLong(11))
-                            .name(rs.getString(12))
-                            .specialization(Specialization.valueOf(rs.getString(13)))
-                            .build())
-                    .status(AssignmentStatus.valueOf(rs.getString(14)))
-                    .userCommentary(rs.getString(15))
-                    .employeeCommentary(rs.getString(16))
-                    .build();
-            addTasks(assignment);
-            return Optional.of(assignment);
         }
-
     }
 
     @Override
     @SneakyThrows
-    public List<Assignment> readAssignments(Long orderId) {
+    public List<Assignment> readAllByOrderId(Long orderId) {
         String FETCH_BY_ID = """
                 SELECT order_id, st.value, arrival_time,created_at,finished_at, user_id,u.name,
                     sp.value,
@@ -175,41 +177,41 @@ public class AssignmentDaoImpl implements AssignmentDao {
         Connection conn = connectionPool.getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID)) {
             stmt.setLong(1, orderId);
-            ResultSet rs = stmt.executeQuery();
-            List<Assignment> assignmentList = new ArrayList<>();
-            while (rs.next()) {
-                Timestamp finishedAt = rs.getTimestamp(5);
-                Timestamp startTime = rs.getTimestamp(9);
-                Assignment assignment = Assignment.builder()
-                        .order(Order.builder()
-                                .id(rs.getLong(1))
-                                .status(OrderStatus.valueOf(rs.getString(2)))
-                                .arrivalTime(rs.getTimestamp(3).toLocalDateTime())
-                                .createdAt(rs.getTimestamp(4).toLocalDateTime())
-                                .finishedAt(Objects.isNull(finishedAt) ? null : finishedAt.toLocalDateTime())
-                                .user(User.builder()
-                                        .id(rs.getLong(6))
-                                        .name(rs.getString(7))
-                                        .build())
-                                .build())
-                        .specialization(Specialization.valueOf(rs.getString(8)))
-                        .startTime(Objects.isNull(startTime) ? null : startTime.toLocalDateTime())
-                        .finalCost(rs.getBigDecimal(10))
-                        .employee(rs.getLong(11) == 0 ? null : Employee.builder()
-                                .id(rs.getLong(11))
-                                .name(rs.getString(12))
-                                .specialization(Specialization.valueOf(rs.getString(13)))
-                                .build())
-                        .status(AssignmentStatus.valueOf(rs.getString(14)))
-                        .userCommentary(rs.getString(15))
-                        .employeeCommentary(rs.getString(16))
-                        .id(rs.getLong(17))
-                        .build();
-                addTasks(assignment);
-                assignmentList.add(assignment);
+            try (ResultSet rs = stmt.executeQuery()) {
+                List<Assignment> assignmentList = new ArrayList<>();
+                while (rs.next()) {
+                    Timestamp finishedAt = rs.getTimestamp(5);
+                    Timestamp startTime = rs.getTimestamp(9);
+                    Assignment assignment = Assignment.builder()
+                            .order(Order.builder()
+                                    .id(rs.getLong(1))
+                                    .status(OrderStatus.valueOf(rs.getString(2)))
+                                    .arrivalTime(rs.getTimestamp(3).toLocalDateTime())
+                                    .createdAt(rs.getTimestamp(4).toLocalDateTime())
+                                    .finishedAt(Objects.isNull(finishedAt) ? null : finishedAt.toLocalDateTime())
+                                    .user(User.builder()
+                                            .id(rs.getLong(6))
+                                            .name(rs.getString(7))
+                                            .build())
+                                    .build())
+                            .specialization(Specialization.valueOf(rs.getString(8)))
+                            .startTime(Objects.isNull(startTime) ? null : startTime.toLocalDateTime())
+                            .finalCost(rs.getBigDecimal(10))
+                            .employee(rs.getLong(11) == 0 ? null : Employee.builder()
+                                    .id(rs.getLong(11))
+                                    .name(rs.getString(12))
+                                    .specialization(Specialization.valueOf(rs.getString(13)))
+                                    .build())
+                            .status(AssignmentStatus.valueOf(rs.getString(14)))
+                            .userCommentary(rs.getString(15))
+                            .employeeCommentary(rs.getString(16))
+                            .id(rs.getLong(17))
+                            .build();
+                    addTasks(assignment);
+                    assignmentList.add(assignment);
+                }
+                return assignmentList;
             }
-            return assignmentList;
-
         }
     }
 
@@ -237,7 +239,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
 
     @Override
     @SneakyThrows
-    public void updateAssignment(Assignment assignment) {
+    public void update(Assignment assignment) {
         String UPDATE_QUERY = """
                 UPDATE assignments
                 SET
@@ -261,8 +263,10 @@ public class AssignmentDaoImpl implements AssignmentDao {
             updateStmt.setString(7, assignment.getEmployeeCommentary());
             updateStmt.setLong(8, assignment.getId());
             updateStmt.executeUpdate();
-            ResultSet keys = updateStmt.getGeneratedKeys();
-            keys.next();
+            try (ResultSet keys = updateStmt.getGeneratedKeys()) {
+                keys.next();
+                assignment.setId(keys.getLong(1));
+            }
         }
     }
 }

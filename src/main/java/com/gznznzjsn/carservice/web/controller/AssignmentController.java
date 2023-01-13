@@ -3,9 +3,10 @@ package com.gznznzjsn.carservice.web.controller;
 import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
 import com.gznznzjsn.carservice.service.AssignmentService;
 import com.gznznzjsn.carservice.web.dto.AssignmentDto;
+import com.gznznzjsn.carservice.web.dto.group.OnCreateAssignment;
 import com.gznznzjsn.carservice.web.dto.mapper.AssignmentMapper;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,28 +18,20 @@ public class AssignmentController {
     private final AssignmentService assignmentService;
 
     @GetMapping("/{assignmentId}")
-    public @Valid AssignmentDto.Response.Read getAssignment(
+    public AssignmentDto get(
             @PathVariable Long assignmentId) {
-        Assignment assignment = assignmentService.getAssignment(assignmentId);
-        return assignmentMapper.toReadDto(assignment);
+        Assignment assignment = assignmentService.get(assignmentId);
+        return assignmentMapper.toDto(assignment);
     }
 
     @PostMapping
-    public @Valid AssignmentDto.Response.Create addAssignment(
-            @Valid @RequestBody AssignmentDto.Request.Create assignmentDto
+    public AssignmentDto create(
+            @Validated(OnCreateAssignment.class) @RequestBody AssignmentDto assignmentDto
     ) {
         Assignment assignment = assignmentMapper.toEntity(assignmentDto);
-        Assignment createdAssignment = assignmentService.createAssignment(assignment);
-        return assignmentMapper.toCreateDto(createdAssignment);
+        Assignment createdAssignment = assignmentService.create(assignment);
+        return assignmentMapper.toDto(createdAssignment);
     }
 
-    //    @PatchMapping("/{id}/assignments/{assignment_id}")
-//    public Assignment acceptAssignment(@PathVariable("id") Long employeeId, @PathVariable Long assignment_id, @RequestBody AssignmentDto.Request.Accept assignmentDto) {
-//        Assignment assignment = assignmentMapper.toEntity(assignmentDto);
-//        assignment.setEmployee(employeeService.getEmployeeById(employeeId));
-//        assignment.setId(assignment_id);
-//        Assignment acceptedAssignment = assignmentService.acceptAssignment(assignment);
-//        return acceptedAssignment;
-//        //return assignmentMapper.toDto(acceptedAssignment);
-//    }
+
 }

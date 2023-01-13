@@ -18,28 +18,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Employee> readAllEmployees() {
+    public List<Employee> getAll() {
         return employeeDao.readAll();
     }
 
     @Override
     @Transactional
-    public Employee createEmployee(Employee employee) {
-        return employeeDao.createEmployee(employee);
+    public Employee create(Employee employee) {
+        return employeeDao.create(employee);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Employee getEmployee(Long employeeId) {
-        return employeeDao.readEmployee(employeeId)
+    public Employee get(Long employeeId) {
+        return employeeDao.read(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee with id=" + employeeId + " not found!"));
 
     }
 
     @Override
     @Transactional
-    public void deleteEmployee(Long employeeId) {
-        employeeDao.deleteEmployee(employeeId);
+    public void delete(Long employeeId) {
+        employeeDao.delete(employeeId);
     }
 
 

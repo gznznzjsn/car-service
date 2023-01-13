@@ -3,7 +3,7 @@ package com.gznznzjsn.carservice.dao.impl;
 import com.gznznzjsn.carservice.dao.EmployeeDao;
 import com.gznznzjsn.carservice.domain.carservice.Employee;
 import com.gznznzjsn.carservice.domain.carservice.Specialization;
-import com.gznznzjsn.carservice.util.ConnectionPool;
+import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
@@ -32,13 +32,14 @@ public class EmployeeDaoImpl implements EmployeeDao {
         List<Employee> allEmployees = new ArrayList<>();
         Connection conn = connectionPool.getConnection();
         try (Statement stmt = conn.createStatement()) {
-            ResultSet rs = stmt.executeQuery(FETCH_ALL_QUERY);
-            while (rs.next()) {
-                allEmployees.add(Employee.builder()
-                        .id(rs.getLong("employee_id"))
-                        .name(rs.getString("name"))
-                        .specialization(Specialization.valueOf(rs.getString("value")))
-                        .build());
+            try (ResultSet rs = stmt.executeQuery(FETCH_ALL_QUERY)) {
+                while (rs.next()) {
+                    allEmployees.add(Employee.builder()
+                            .id(rs.getLong("employee_id"))
+                            .name(rs.getString("name"))
+                            .specialization(Specialization.valueOf(rs.getString("value")))
+                            .build());
+                }
             }
         }
         return allEmployees;
@@ -46,12 +47,12 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     @SneakyThrows
-    public Employee createEmployee(Employee employee) {
+    public Employee create(Employee employee) {
         String ADD_EMPLOYEE_QUERY = """
-                                INSERT INTO employees (name, specialization_id)
-                                VALUES (?,
-                                (SELECT specialization_id FROM specializations WHERE value = ?)
-                                );
+                    INSERT INTO employees (name, specialization_id)
+                    VALUES (?,
+                       (SELECT specialization_id FROM specializations WHERE value = ?)
+                        );
                 """;
 
         Connection conn = connectionPool.getConnection();
@@ -59,16 +60,17 @@ public class EmployeeDaoImpl implements EmployeeDao {
             stmt.setString(1, employee.getName());
             stmt.setString(2, employee.getSpecialization().name());
             stmt.executeUpdate();
-            ResultSet keys = stmt.getGeneratedKeys();
-            keys.next();
-            employee.setId(keys.getLong(1));
+            try (ResultSet keys = stmt.getGeneratedKeys()) {
+                keys.next();
+                employee.setId(keys.getLong(1));
+            }
         }
         return employee;
     }
 
     @Override
     @SneakyThrows
-    public Optional<Employee> readEmployee(Long employeeId) {
+    public Optional<Employee> read(Long employeeId) {
         String FETCH_BY_ID_QUERY = """
                 SELECT name, specializations.value
                 FROM employees JOIN specializations USING (specialization_id)
@@ -78,16 +80,16 @@ public class EmployeeDaoImpl implements EmployeeDao {
         Connection conn = connectionPool.getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID_QUERY)) {
             stmt.setLong(1, employeeId);
-            ResultSet rs = stmt.executeQuery();
-            if (!rs.next()) {
-                return Optional.empty();
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+                return Optional.of(Employee.builder()
+                        .id(employeeId)
+                        .name(rs.getString(1))
+                        .specialization(Specialization.valueOf(rs.getString(2)))
+                        .build());
             }
-            return Optional.of(Employee.builder()
-                    .id(employeeId)
-                    .name(rs.getString(1))
-                    .specialization(Specialization.valueOf(rs.getString(2)))
-                    .build());
-
         }
 
 
@@ -95,7 +97,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     @SneakyThrows
-    public void deleteEmployee(Long employeeId) {
+    public void delete(Long employeeId) {
         String DELETE_BY_ID = """
                 DELETE FROM employees WHERE employee_id=?;
                 """;

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,11 +19,11 @@ public class PeriodServiceImpl implements PeriodService {
 
     @Override
     @Transactional
-    public Period eraseAppropriatePeriod(LocalDateTime arrivalTime, Specialization specialization, int totalDuration) {
-        Optional<Period> optionalPeriod = periodDao.erasePeriod(arrivalTime, specialization, totalDuration);
-        if (optionalPeriod.isEmpty()) {
-            throw new ResourceNotFoundException("No free time periods for such parameters: arrival time = " + arrivalTime + ", specialization = " + specialization.name() + ", total assignment duration = " + totalDuration);
-        }
-        return optionalPeriod.get();
+    public Period eraseAppropriate(LocalDateTime arrivalTime, Specialization specialization, int totalDuration) {
+        return periodDao.erase(arrivalTime, specialization, totalDuration)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("No free time periods for such parameters: arrival time = " + arrivalTime + ", specialization = " + specialization.name() + ", total assignment duration = " + totalDuration)
+                );
+
     }
 }

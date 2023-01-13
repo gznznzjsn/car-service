@@ -5,9 +5,11 @@ import com.gznznzjsn.carservice.domain.carservice.order.Order;
 import java.util.Optional;
 
 public interface OrderDao {
-    void createOrder(Order order);
 
-    Optional<Order> readOrder(Long orderId);
+    void create(Order order);
 
-    void updateOrder(Order order);
+    Optional<Order> read(Long orderId);
+
+    void update(Order order);
+
 }

@@ -4,7 +4,7 @@ import com.gznznzjsn.carservice.dao.OrderDao;
 import com.gznznzjsn.carservice.domain.carservice.order.Order;
 import com.gznznzjsn.carservice.domain.carservice.User;
 import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
-import com.gznznzjsn.carservice.util.ConnectionPool;
+import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
@@ -21,7 +21,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     @SneakyThrows
-    public void createOrder(Order order) {
+    public void create(Order order) {
         String INSERT_ORDER = """
                 INSERT INTO orders ( status_id, arrival_time, created_at,  user_id)
                 VALUES ((SELECT status_id FROM statuses WHERE value=?),?,now(),?);
@@ -32,9 +32,10 @@ public class OrderDaoImpl implements OrderDao {
             stmt.setObject(2, order.getArrivalTime());
             stmt.setLong(3, order.getUser().getId());
             stmt.executeUpdate();
-            ResultSet keys = stmt.getGeneratedKeys();
-            keys.next();
-            order.setId(keys.getLong(1));
+            try (ResultSet keys = stmt.getGeneratedKeys()) {
+                keys.next();
+                order.setId(keys.getLong(1));
+            }
         }
 
 
@@ -42,7 +43,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     @SneakyThrows
-    public Optional<Order> readOrder(Long orderId) {
+    public Optional<Order> read(Long orderId) {
         String FETCH_BY_ID = """
                 SELECT value, arrival_time,created_at,finished_at, user_id, name
                 FROM orders JOIN statuses USING (status_id)
@@ -53,29 +54,29 @@ public class OrderDaoImpl implements OrderDao {
         Connection conn = connectionPool.getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID)) {
             stmt.setLong(1, orderId);
-            ResultSet rs = stmt.executeQuery();
-            if (!rs.next()) {
-                return Optional.empty();
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+                Timestamp finishedAt = rs.getTimestamp(4);
+                return Optional.of(Order.builder()
+                        .id(orderId)
+                        .status(OrderStatus.valueOf(rs.getString(1)))
+                        .arrivalTime(rs.getTimestamp(2).toLocalDateTime())
+                        .createdAt(rs.getTimestamp(3).toLocalDateTime())
+                        .finishedAt(Objects.isNull(finishedAt) ? null : finishedAt.toLocalDateTime())
+                        .user(User.builder()
+                                .id(rs.getLong(5))
+                                .name(rs.getString(6))
+                                .build())
+                        .build());
             }
-            Timestamp finishedAt = rs.getTimestamp(4);
-            return Optional.of(Order.builder()
-                    .id(orderId)
-                    .status(OrderStatus.valueOf(rs.getString(1)))
-                    .arrivalTime(rs.getTimestamp(2).toLocalDateTime())
-                    .createdAt(rs.getTimestamp(3).toLocalDateTime())
-                    .finishedAt(Objects.isNull(finishedAt) ? null : finishedAt.toLocalDateTime())
-                    .user(User.builder()
-                            .id(rs.getLong(5))
-                            .name(rs.getString(6))
-                            .build())
-                    .build());
-
         }
     }
 
     @Override
     @SneakyThrows
-    public void updateOrder(Order order) {
+    public void update(Order order) {
         String UPDATE = """
                 UPDATE orders
                 SET status_id=(SELECT status_id FROM statuses WHERE value=?),

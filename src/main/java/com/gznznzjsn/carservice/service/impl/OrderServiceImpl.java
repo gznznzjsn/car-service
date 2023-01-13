@@ -21,25 +21,25 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order createOrder(Order order) {
-        User user = userService.getUser(order.getUser().getId());
+    public Order create(Order order) {
+        User user = userService.get(order.getUser().getId());
         order.setUser(user);
         order.setStatus(OrderStatus.NOT_SENT);
-        orderDao.createOrder(order);
+        orderDao.create(order);
         return order;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Order getOrder(Long orderId) {
-        return orderDao.readOrder(orderId)
+    public Order get(Long orderId) {
+        return orderDao.read(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order with id = " + orderId + " doesn't exist!"));
     }
 
     @Override
     @Transactional
-    public Order sendOrder(Long orderId) {
-        Order order = getOrder(orderId);
+    public Order send(Long orderId) {
+        Order order = get(orderId);
         if (!order.getStatus().equals(OrderStatus.NOT_SENT)) {
             throw new IllegalActionException("You can't send order with id = " + order.getId() + ", because it's already sent!");
         }
@@ -47,15 +47,15 @@ public class OrderServiceImpl implements OrderService {
                 .id(orderId)
                 .status(OrderStatus.UNDER_CONSIDERATION)
                 .build();
-        return updateOrder(orderToUpdate);
+        return update(orderToUpdate);
 
 
     }
 
     @Override
     @Transactional
-    public Order updateOrder(Order order) {
-        Order orderFromRepository = getOrder(order.getId());
+    public Order update(Order order) {
+        Order orderFromRepository = get(order.getId());
 
         if (order.getStatus() != null) {
             orderFromRepository.setStatus(order.getStatus());
@@ -63,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
         if (order.getArrivalTime() != null) {
             orderFromRepository.setArrivalTime(order.getArrivalTime());
         }
-        orderDao.updateOrder(orderFromRepository);
+        orderDao.update(orderFromRepository);
 
         return orderFromRepository;
     }

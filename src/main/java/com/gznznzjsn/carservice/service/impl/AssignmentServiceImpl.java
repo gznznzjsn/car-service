@@ -31,9 +31,9 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     @Override
     @Transactional
-    public Assignment createAssignment(Assignment assignment) {
+    public Assignment create(Assignment assignment) {
 
-        Order order = orderService.getOrder(assignment.getOrder().getId());
+        Order order = orderService.get(assignment.getOrder().getId());
         assignment.setOrder(order);
         if (!assignment.getOrder().getStatus().equals(OrderStatus.NOT_SENT)) {
             throw new IllegalActionException("You can't add assignment to already sent order!");
@@ -42,15 +42,15 @@ public class AssignmentServiceImpl implements AssignmentService {
             throw new NotEnoughResourcesException("You can't create assignment without tasks!");
         }
         assignment.setStatus(AssignmentStatus.NOT_SENT);
-        assignmentDao.createAssignment(assignment);
+        assignmentDao.create(assignment);
         return assignment;
     }
 
     @Override
     @Transactional
-    public List<Assignment> sendAssignmentsAndOrder(Long orderId) {
-        orderService.sendOrder(orderId);
-        List<Assignment> assignments = getAssignments(orderId);
+    public List<Assignment> sendWithOrder(Long orderId) {
+        orderService.send(orderId);
+        List<Assignment> assignments = getAllByOrderId(orderId);
         if (assignments.isEmpty()) {
             throw new NotEnoughResourcesException("You cannot send order without assignments!");
         }
@@ -63,7 +63,7 @@ public class AssignmentServiceImpl implements AssignmentService {
             int totalDuration = a.getTasks().stream()
                     .map(Task::getDuration)
                     .reduce(0, Integer::sum);
-            Period appropriatePeriod = periodService.eraseAppropriatePeriod(a.getOrder().getArrivalTime(), a.getSpecialization(), totalDuration);
+            Period appropriatePeriod = periodService.eraseAppropriate(a.getOrder().getArrivalTime(), a.getSpecialization(), totalDuration);
             Assignment assignmentToUpdate = Assignment.builder()
                     .id(a.getId())
                     .status(AssignmentStatus.UNDER_CONSIDERATION)
@@ -73,7 +73,7 @@ public class AssignmentServiceImpl implements AssignmentService {
                     .startTime(appropriatePeriod.getDate().atTime(appropriatePeriod.getStart(), 0))
                     .build();
             updatedAssignments.add(
-                    updateAssignment(assignmentToUpdate)
+                    update(assignmentToUpdate)
             );
         });
 
@@ -82,8 +82,8 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     @Override
     @Transactional
-    public Assignment updateAssignment(Assignment assignment) {
-        Assignment assignmentFromRepository = getAssignment(assignment.getId());
+    public Assignment update(Assignment assignment) {
+        Assignment assignmentFromRepository = get(assignment.getId());
         if (assignment.getStatus() != null) {
             assignmentFromRepository.setStatus(assignment.getStatus());
         }
@@ -105,22 +105,22 @@ public class AssignmentServiceImpl implements AssignmentService {
         if (assignment.getTasks() != null) {
             assignmentFromRepository.setTasks(assignment.getTasks());
         }
-        assignmentDao.updateAssignment(assignmentFromRepository);
+        assignmentDao.update(assignmentFromRepository);
 
         return assignmentFromRepository;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Assignment getAssignment(Long assignmentId) {
-        return assignmentDao.readAssignment(assignmentId)
+    public Assignment get(Long assignmentId) {
+        return assignmentDao.read(assignmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Assignment with id = " + assignmentId + " doesn't exist!"));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Assignment> getAssignments(Long orderId) {
-        return assignmentDao.readAssignments(orderId);
+    public List<Assignment> getAllByOrderId(Long orderId) {
+        return assignmentDao.readAllByOrderId(orderId);
     }
 
 

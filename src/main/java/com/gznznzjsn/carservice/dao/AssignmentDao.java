@@ -7,12 +7,12 @@ import java.util.Optional;
 
 public interface AssignmentDao {
 
+    List<Assignment> readAllByOrderId(Long orderId);
 
-    List<Assignment> readAssignments(Long orderId);
+    void update(Assignment createdAssignment);
 
-    void updateAssignment(Assignment createdAssignment);
+    void create(Assignment assignment);
 
-    void createAssignment(Assignment assignment);
+    Optional<Assignment> read(Long assignmentId);
 
-    Optional<Assignment> readAssignment(Long assignmentId);
 }

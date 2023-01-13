@@ -1,7 +1,6 @@
 package com.gznznzjsn.carservice.service;
 
 import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,13 +13,14 @@ public interface AssignmentService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    Assignment createAssignment(Assignment assignment);
+    Assignment create(Assignment assignment);
 
-    List<Assignment> sendAssignmentsAndOrder(Long orderId);
+    List<Assignment> sendWithOrder(Long orderId);
 
-    Assignment updateAssignment(Assignment assignment);
+    Assignment update(Assignment assignment);
 
-    Assignment getAssignment(Long assignmentId);
+    Assignment get(Long assignmentId);
 
-    List<Assignment> getAssignments(Long orderId);
+    List<Assignment> getAllByOrderId(Long orderId);
+
 }

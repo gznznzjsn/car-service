@@ -3,7 +3,7 @@ package com.gznznzjsn.carservice.dao.impl;
 import com.gznznzjsn.carservice.dao.TaskDao;
 import com.gznznzjsn.carservice.domain.carservice.Task;
 import com.gznznzjsn.carservice.domain.carservice.Specialization;
-import com.gznznzjsn.carservice.util.ConnectionPool;
+import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
@@ -19,10 +19,9 @@ public class TaskDaoImpl implements TaskDao {
 
     private final ConnectionPool connectionPool;
 
-
     @Override
     @SneakyThrows
-    public Optional<Task> readTask(Long id) {
+    public Optional<Task> read(Long id) {
         String FETCH_BY_ID_QUERY = """
                 SELECT name, duration, cost_per_hour,specializations.value
                 FROM tasks JOIN specializations USING (specialization_id)
@@ -31,21 +30,19 @@ public class TaskDaoImpl implements TaskDao {
         Connection conn = connectionPool.getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID_QUERY)) {
             stmt.setLong(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (!rs.next()) {
-                return Optional.empty();
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+                return Optional.of(Task.builder()
+                        .id(id)
+                        .name(rs.getString(1))
+                        .duration(rs.getInt(2))
+                        .costPerHour(rs.getBigDecimal(3))
+                        .requiredSpecialization(Specialization.valueOf(rs.getString(4)))
+                        .build());
             }
-            return Optional.of(Task.builder()
-                    .id(id)
-                    .name(rs.getString(1))
-                    .duration(rs.getInt(2))
-                    .costPerHour(rs.getBigDecimal(3))
-                    .requiredSpecialization(Specialization.valueOf(rs.getString(4)))
-                    .build());
-
         }
-
-
     }
 
 }

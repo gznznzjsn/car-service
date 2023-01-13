@@ -15,7 +15,6 @@
     <description>car-service</description>
 
     <properties>
-
         <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
         <java.version>17</java.version>
         <liquibase.version>4.18.0</liquibase.version>
@@ -82,7 +81,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -100,7 +98,6 @@
                             <artifactId>mapstruct-processor</artifactId>
                             <version>${org.mapstruct.version}</version>
                         </path>
-
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>

@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeDao {
+
     List<Employee> readAll();
 
-    Employee createEmployee(Employee employee);
+    Employee create(Employee employee);
 
-    Optional<Employee> readEmployee(Long employeeId);
+    Optional<Employee> read(Long employeeId);
 
-    void deleteEmployee(Long employeeId);
+    void delete(Long employeeId);
+
 }

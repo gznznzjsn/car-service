@@ -1,11 +1,14 @@
 --liquibase formatted sql
 
+--changeset gznznzjsn:create-schema
+create schema if not exists my_schema;
+
 --changeset gznznzjsn:create-users
-create table users
-(
-    user_id bigserial primary key,
-    "name"  varchar(40) not null
-);
+    create table users
+    (
+        user_id bigserial primary key,
+        "name"  varchar(40) not null
+    );
 --rollback drop table users;
 
 --changeset gznznzjsn:create-specializations
@@ -20,8 +23,8 @@ create table if not exists specializations
 create table employees
 (
     employee_id       bigserial primary key,
-    "name"            varchar(40) not null,
-    specialization_id bigint references specializations on delete cascade
+    specialization_id bigint references specializations on delete cascade,
+    "name"            varchar(40) not null
 
 );
 --rollback drop table employees;
@@ -49,10 +52,10 @@ create table consumables
 create table tasks
 (
     task_id           bigserial primary key,
+    specialization_id bigint references specializations on delete cascade,
     "name"            varchar(40) not null,
     duration          int,
-    cost_per_hour     numeric,
-    specialization_id bigint references specializations on delete cascade
+    cost_per_hour     numeric
 );
 --rollback drop table tasks;
 
@@ -60,7 +63,7 @@ create table tasks
 create table requirements
 (
     requirement_id     bigserial primary key,
-    task_id        bigint references tasks on delete cascade,
+    task_id            bigint references tasks on delete cascade,
     consumable_type_id bigint references consumable_types on delete cascade,
     required_quantity  bigint not null
 );
@@ -80,10 +83,10 @@ create table orders
 (
     order_id     bigserial primary key,
     status_id    bigint references statuses on delete cascade,
+    user_id      bigint references users on delete cascade,
     arrival_time timestamp not null,
     created_at   timestamp not null,
-    finished_at  timestamp,
-    user_id      bigint references users on delete cascade
+    finished_at  timestamp
 );
 --rollback drop table orders;
 --changeset gznznzjsn:create-assignment_statuses
@@ -99,10 +102,10 @@ create table assignments
     assignment_id        bigserial primary key,
     order_id             bigint references orders on delete cascade,
     specialization_id    bigint references specializations on delete cascade,
-    start_time           timestamp,
-    final_cost           bigint,
     employee_id          bigint references employees on delete cascade,
     assignment_status_id bigint references assignment_statuses on delete cascade,
+    start_time           timestamp,
+    final_cost           bigint,
     user_commentary      varchar(255),
     employee_commentary  varchar(255),
     constraint a_un unique (order_id, specialization_id)
@@ -121,10 +124,10 @@ create table assignments_tasks
 --changeset gznznzjsn:create-periods
 create table periods
 (
-    period_id   bigserial primary key,
-    employee_id bigint references employees on delete cascade,
-    period_date date not null ,
-    period_start   smallint not null,
-    period_end       smallint not null
+    period_id    bigserial primary key,
+    employee_id  bigint references employees on delete cascade,
+    period_date  date     not null,
+    period_start smallint not null,
+    period_end   smallint not null
 );
 --rollback drop table assignments_periods;

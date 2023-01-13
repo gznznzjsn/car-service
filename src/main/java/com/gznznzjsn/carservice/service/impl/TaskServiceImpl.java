@@ -16,8 +16,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = true)
-    public Task readTask(Long id) {
-        return taskDao.readTask(id)
+    public Task get(Long id) {
+        return taskDao.read(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task with id=" + id + " not found!"));
 
     }

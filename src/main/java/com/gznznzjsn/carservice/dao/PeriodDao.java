@@ -7,5 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface PeriodDao {
-    Optional<Period> erasePeriod(LocalDateTime arrivalTime, Specialization specialization, int totalDuration);
+
+    Optional<Period> erase(LocalDateTime arrivalTime, Specialization specialization, int totalDuration);
+
 }

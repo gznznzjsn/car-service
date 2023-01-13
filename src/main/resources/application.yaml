@@ -1,9 +1,15 @@
 spring:
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.yaml
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/car_service
+    url: jdbc:postgresql://localhost:5432/car_service?currentSchema=my_schema
     username: postgres
     password: 1q2w3e
 
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    default-schema: my_schema
+
+server:
+  servlet:
+    context-path: /api/v1

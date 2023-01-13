@@ -2,7 +2,7 @@ package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.UserDao;
 import com.gznznzjsn.carservice.domain.carservice.User;
-import com.gznznzjsn.carservice.util.ConnectionPool;
+import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
@@ -30,14 +30,15 @@ public class UserDaoImpl implements UserDao {
         Connection conn = connectionPool.getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(FETCH_BY_ID)) {
             stmt.setLong(1, userId);
-            ResultSet rs = stmt.executeQuery();
-            if (!rs.next()) {
-                return Optional.empty();
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+                return Optional.of(User.builder()
+                        .id(userId)
+                        .name(rs.getString(1))
+                        .build());
             }
-            return Optional.of(User.builder()
-                    .id(userId)
-                    .name(rs.getString(1))
-                    .build());
 
         }
     }

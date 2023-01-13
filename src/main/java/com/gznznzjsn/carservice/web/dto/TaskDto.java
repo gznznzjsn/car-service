@@ -1,5 +1,6 @@
 package com.gznznzjsn.carservice.web.dto;
 
+import com.gznznzjsn.carservice.web.dto.group.OnCreateAssignment;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -7,35 +8,21 @@ import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 
-public enum TaskDto {
-    ;
+public record TaskDto(
 
-    public enum Request {
-        ;
+        @NotNull(message = "Task id is mandatory!", groups = {OnCreateAssignment.class})
+        Long id,
 
-        public record AddToAssignment(
-                @NotNull(message = "Id is mandatory!")
-                Long id) {
-        }
-    }
+        @NotBlank(message = "Task name can't be blank!")
+        @Length(max = 40, message = "Too long name!")
+        String name,
 
-    public enum Response {
-        ;
+        @Positive(message = "Task duration must be positive!")
+        int duration,
 
-        public record Read(
-                @NotNull(message = "Id is mandatory!")
-                Long id,
+        @NotNull(message = "Cost per hour must be set!")
+        @Positive(message = "Cost per hour must be positive!")
+        BigDecimal costPerHour
 
-                @NotBlank(message = "Task name can't be blank!")
-                @Length(max = 40, message = "Too long name!")
-                String name,
-
-                @Positive(message = "Task duration must be positive!")
-                int duration,
-
-                @NotNull(message = "Cost per hour must be set!")
-                @Positive(message = "Cost per hour must be positive!")
-                BigDecimal costPerHour) {
-        }
-    }
+) {
 }

@@ -1,6 +1,7 @@
 package com.gznznzjsn.carservice.domain.carservice;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder
