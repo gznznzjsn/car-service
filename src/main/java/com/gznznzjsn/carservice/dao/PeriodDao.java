@@ -8,6 +8,12 @@ import java.util.Optional;
 
 public interface PeriodDao {
 
-    Optional<Period> erase(LocalDateTime arrivalTime, Specialization specialization, int totalDuration);
+    void delete(Long periodId);
+
+    Optional<Period> readBy(LocalDateTime arrivalTime, Specialization specialization, int totalDuration);
+
+    void update(Period period);
+
+    Optional<Period> read(Long periodId);
 
 }

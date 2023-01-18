@@ -10,6 +10,3 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.yaml
     default-schema: my_schema
 
-server:
-  servlet:
-    context-path: /api/v1

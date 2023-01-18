@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/orders")
+@RequestMapping("/api/v1/orders")
 public class OrderController {
 
     private final AssignmentService assignmentService;
@@ -26,7 +26,7 @@ public class OrderController {
     private final AssignmentListMapper assignmentListMapper;
 
 
-    @PostMapping("/api/v1/{orderId}/send")
+    @PostMapping("/{orderId}/send")
     public List<AssignmentDto> sendWithAssignments(@PathVariable Long orderId) {
         List<Assignment> sentAssignments = assignmentService.sendWithOrder(orderId);
         return assignmentListMapper.toDto(sentAssignments);

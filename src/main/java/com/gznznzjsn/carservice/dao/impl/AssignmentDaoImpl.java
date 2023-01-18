@@ -231,7 +231,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
                 WHERE assignment_id=?
                 """;
         Connection conn = connectionPool.getConnection();
-        try (PreparedStatement updateStmt = conn.prepareStatement(UPDATE_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement updateStmt = conn.prepareStatement(UPDATE_QUERY)) {
             updateStmt.setString(1, assignment.getSpecialization().name());
             updateStmt.setObject(2, assignment.getStartTime());
             updateStmt.setBigDecimal(3, assignment.getFinalCost());
@@ -241,10 +241,6 @@ public class AssignmentDaoImpl implements AssignmentDao {
             updateStmt.setString(7, assignment.getEmployeeCommentary());
             updateStmt.setLong(8, assignment.getId());
             updateStmt.executeUpdate();
-            try (ResultSet keys = updateStmt.getGeneratedKeys()) {
-                keys.next();
-                assignment.setId(keys.getLong(1));
-            }
         }
     }
 
