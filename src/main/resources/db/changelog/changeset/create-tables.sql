@@ -1,7 +1,5 @@
 --liquibase formatted sql
 
-
-
 --changeset gznznzjsn:create-users
     create table users
     (

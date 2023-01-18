@@ -20,4 +20,5 @@ public class UserServiceImpl implements UserService {
         return userDao.readUser(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " doesn't exist!"));
     }
+
 }

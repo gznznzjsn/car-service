@@ -215,28 +215,6 @@ public class AssignmentDaoImpl implements AssignmentDao {
         }
     }
 
-//    @SneakyThrows
-//    public Assignment acceptAssignment(Assignment assignment) {
-//        String UPDATE_QUERY = """
-//                UPDATE assignments
-//                SET assignment_status_id=(SELECT assignment_status_id FROM assignment_statuses WHERE value=?) ,
-//                employee_commentary=?,
-//                final_cost=?
-//                WHERE assignment_id=?
-//                """;
-//        Connection conn = connectionPool.getConnection();
-//        try (PreparedStatement updateStmt = conn.prepareStatement(UPDATE_QUERY, Statement.RETURN_GENERATED_KEYS)) {
-//            updateStmt.setString(1, assignment.getStatus().name());
-//            updateStmt.setString(2, assignment.getEmployeeCommentary());
-//            updateStmt.setBigDecimal(3, assignment.getFinalCost());
-//            updateStmt.setLong(4, assignment.getId());
-//            updateStmt.executeUpdate();
-//            ResultSet keys = updateStmt.getGeneratedKeys();
-//            keys.next();
-//        }
-//        return assignment;
-//    }
-
     @Override
     @SneakyThrows
     public void update(Assignment assignment) {
@@ -269,4 +247,5 @@ public class AssignmentDaoImpl implements AssignmentDao {
             }
         }
     }
+
 }

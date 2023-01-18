@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/employees")
+@RequestMapping("/api/v1/employees")
 public class EmployeeController {
 
     private final EmployeeMapper employeeMapper;
@@ -28,9 +28,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public EmployeeDto create(
-            @Validated(OnCreateEmployee.class) @RequestBody EmployeeDto employeeDto
-    ) {
+    public EmployeeDto create(@Validated(OnCreateEmployee.class) @RequestBody EmployeeDto employeeDto) {
         Employee employee = employeeMapper.toEntity(employeeDto);
         Employee returnedEmployee = employeeService.create(employee);
         return employeeMapper.toDto(returnedEmployee);
@@ -46,6 +44,5 @@ public class EmployeeController {
     public void delete(@PathVariable("id") Long employeeId) {
         employeeService.delete(employeeId);
     }
-
 
 }

@@ -1,9 +1,9 @@
 package com.gznznzjsn.carservice.service.impl;
 
 import com.gznznzjsn.carservice.dao.AssignmentDao;
-import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
 import com.gznznzjsn.carservice.domain.carservice.Period;
 import com.gznznzjsn.carservice.domain.carservice.Task;
+import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
 import com.gznznzjsn.carservice.domain.carservice.assignment.AssignmentStatus;
 import com.gznznzjsn.carservice.domain.carservice.order.Order;
 import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
@@ -59,7 +59,6 @@ public class AssignmentServiceImpl implements AssignmentService {
             if (!a.getStatus().equals(AssignmentStatus.NOT_SENT)) {
                 throw new IllegalActionException("You can't send assignment with id = " + a.getId() + ", because it's already sent!");
             }
-            System.out.println(a);
             int totalDuration = a.getTasks().stream()
                     .map(Task::getDuration)
                     .reduce(0, Integer::sum);
@@ -123,5 +122,14 @@ public class AssignmentServiceImpl implements AssignmentService {
         return assignmentDao.readAllByOrderId(orderId);
     }
 
+    @Override
+    public Assignment accept(Assignment assignment) {
+        Assignment existingAssignment = get(assignment.getId());
+        if (!existingAssignment.getStatus().equals(AssignmentStatus.UNDER_CONSIDERATION)) {
+            throw new IllegalActionException("Assignment with id = " + existingAssignment.getId() + " is not under consideration!");
+        }
+        assignment.setStatus(AssignmentStatus.ACCEPTED);
+        return update(assignment);
+    }
 
 }

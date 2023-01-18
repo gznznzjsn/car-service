@@ -79,6 +79,6 @@ public class PeriodDaoImpl implements PeriodDao {
             period.setEnd(period.getStart() + totalDuration);
         }
         return Optional.of(period);
-
     }
+
 }

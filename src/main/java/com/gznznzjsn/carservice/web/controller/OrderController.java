@@ -26,18 +26,14 @@ public class OrderController {
     private final AssignmentListMapper assignmentListMapper;
 
 
-    @PostMapping("/{orderId}/send")
-    public List<AssignmentDto> sendWithAssignments(
-            @PathVariable Long orderId
-    ) {
+    @PostMapping("/api/v1/{orderId}/send")
+    public List<AssignmentDto> sendWithAssignments(@PathVariable Long orderId) {
         List<Assignment> sentAssignments = assignmentService.sendWithOrder(orderId);
         return assignmentListMapper.toDto(sentAssignments);
     }
 
     @PostMapping
-    public OrderDto create(
-            @Validated(OnCreateOrder.class) @RequestBody OrderDto orderDto
-    ) {
+    public OrderDto create(@Validated(OnCreateOrder.class) @RequestBody OrderDto orderDto) {
         Order order = orderMapper.toEntity(orderDto);
         Order createdOrder = orderService.create(order);
         return orderMapper.toDto(createdOrder);
@@ -45,10 +41,9 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public OrderDto get(
-            @PathVariable Long orderId
-    ) {
+    public OrderDto get(@PathVariable Long orderId) {
         Order order = orderService.get(orderId);
         return orderMapper.toDto(order);
     }
+
 }

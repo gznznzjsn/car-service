@@ -23,4 +23,5 @@ public interface AssignmentService {
 
     List<Assignment> getAllByOrderId(Long orderId);
 
+    Assignment accept(Assignment assignment);
 }
