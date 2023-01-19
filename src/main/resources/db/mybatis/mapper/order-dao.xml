@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.gznznzjsn.carservice.dao.OrderDao">
+
+    <resultMap id="OrderResultMap" type="Order" autoMapping="false">
+        <id column="order_id" property="id"/>
+        <result column="order_status" property="status"/>
+        <result column="order_arrival_time" property="arrivalTime"/>
+        <result column="order_created_at" property="createdAt"/>
+        <result column="order_finished_at" property="finishedAt"/>
+        <association column="user_id" property="user" resultMap="com.gznznzjsn.carservice.dao.UserDao.UserResultMap"
+                     autoMapping="false"/>
+    </resultMap>
+
+    <insert id="create" keyProperty="id" keyColumn="order_id" useGeneratedKeys="true">
+        INSERT INTO orders (status_id, arrival_time, created_at, user_id)
+        VALUES ((SELECT status_id FROM statuses WHERE value = #{status}), #{arrivalTime}, now(), #{user.id});
+    </insert>
+
+    <select id="read" parameterType="Long" resultMap="OrderResultMap">
+        SELECT order_id       as "order_id",
+               statuses.value as "order_status",
+               arrival_time   as "order_arrival_time",
+               created_at     as "order_created_at",
+               finished_at    as "order_finished_at",
+               user_id        as "user_id",
+               name           as "user_name"
+        FROM orders
+                 JOIN statuses USING (status_id)
+                 JOIN users USING (user_id)
+        WHERE order_id = #{orderId};
+    </select>
+
+    <update id="update">
+        UPDATE orders
+        SET status_id=(SELECT status_id FROM statuses WHERE value = #{status}),
+            arrival_time= #{arrivalTime};
+    </update>
+
+</mapper>

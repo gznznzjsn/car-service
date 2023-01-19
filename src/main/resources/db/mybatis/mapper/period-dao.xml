@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.gznznzjsn.carservice.dao.PeriodDao">
+
+    <resultMap id="PeriodResultMap" type="Period" autoMapping="false">
+        <id column="period_id" property="id"/>
+        <result column="period_date" property="date"/>
+        <result column="period_start" property="start"/>
+        <result column="period_end" property="end"/>
+        <association property="employee" resultMap="com.gznznzjsn.carservice.dao.EmployeeDao.EmployeeResultMap"
+                     column="employee_id"/>
+    </resultMap>
+
+    <sql id="base_column_list">
+        period_id as "period_id",
+        period_date as "period_date",
+        period_start as "period_start",
+        period_end as "period_end",
+        employee_id as "employee_id",
+        name        as "employee_name",
+        value       as "employee_specialization"
+    </sql>
+
+    <insert id="update">
+        UPDATE periods
+        SET employee_id = #{employee.id},
+            period_start= #{start},
+            period_end= #{end}
+        WHERE period_id = #{id}
+    </insert>
+
+    <select id="read" parameterType="Long" resultMap="PeriodResultMap">
+        SELECT
+        <include refid="base_column_list"/>
+        FROM periods
+        JOIN employees USING (employee_id)
+        JOIN specializations USING (specialization_id)
+        WHERE period_id = #{periodId}
+    </select>
+
+    <select id="readBy" resultMap="PeriodResultMap">
+        SELECT
+        <include refid="base_column_list"/>
+        FROM periods
+        JOIN employees USING (employee_id)
+        JOIN specializations USING (specialization_id)
+        WHERE value = #{specialization}
+        AND period_date > #{arrivalTime}::date
+        AND (period_end - period_start) >= #{totalDuration}
+        ORDER BY period_date, period_start
+        LIMIT 1;
+    </select>
+
+    <delete id="delete" parameterType="Long">
+        DELETE
+        FROM periods
+        WHERE period_id = #{periodId};
+    </delete>
+
+</mapper>
