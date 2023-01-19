@@ -1,13 +1,12 @@
 package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.PeriodDao;
+import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
 import com.gznznzjsn.carservice.domain.carservice.Employee;
 import com.gznznzjsn.carservice.domain.carservice.Period;
 import com.gznznzjsn.carservice.domain.carservice.Specialization;
-import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +15,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@Repository
+//@Repository
 @RequiredArgsConstructor
 public class PeriodDaoImpl implements PeriodDao {
 
@@ -39,7 +38,7 @@ public class PeriodDaoImpl implements PeriodDao {
     @SneakyThrows
     public Optional<Period> readBy(LocalDateTime arrivalTime, Specialization specialization, int totalDuration) {
         String FETCH_PERIOD = """
-                SELECT period_id,period_date,period_start,period_end, employee_id,name,value
+                SELECT period_id,period_date,period_start,period_end, employee_id,name,specializations.value
                  FROM periods JOIN employees USING (employee_id)
                  JOIN specializations USING (specialization_id)
                  WHERE value = ?
@@ -58,6 +57,7 @@ public class PeriodDaoImpl implements PeriodDao {
                 if (!rs.next()) {
                     return Optional.empty();
                 }
+                System.out.println(rs.getString(7));
                 return Optional.of(Period.builder()
                         .id(rs.getLong(1))
                         .date(new java.sql.Date(rs.getDate(2).getTime()).toLocalDate())

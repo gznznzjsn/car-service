@@ -10,7 +10,6 @@ import com.gznznzjsn.carservice.domain.carservice.order.Order;
 import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@Repository
+//@Repository
 @RequiredArgsConstructor
 public class AssignmentDaoImpl implements AssignmentDao {
     private final ConnectionPool connectionPool;
@@ -31,10 +30,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
                 INSERT INTO assignments (order_id, specialization_id, start_time, final_cost, employee_id, assignment_status_id, user_commentary, employee_commentary)
                 VALUES (?,(SELECT specialization_id FROM specializations WHERE value =?),?,?,?,(SELECT assignment_status_id FROM assignment_statuses WHERE value =?),?,?)
                 """;
-        String INSERT_TASKS_TO_ASSIGNMENT = """
-                INSERT INTO assignments_tasks (task_id, assignment_id)
-                VALUES (?,?)
-                    """;
+
 
         Connection conn = connectionPool.getConnection();
         try (PreparedStatement createStmt = conn.prepareStatement(CREATE_ASSIGNMENT, Statement.RETURN_GENERATED_KEYS)) {
@@ -52,6 +48,17 @@ public class AssignmentDaoImpl implements AssignmentDao {
                 assignment.setId(keys.getLong(1));
             }
         }
+
+    }
+
+    @Override
+    @SneakyThrows
+    public void createTasks(Assignment assignment) {
+        String INSERT_TASKS_TO_ASSIGNMENT = """
+                INSERT INTO assignments_tasks (task_id, assignment_id)
+                VALUES (?,?)
+                    """;
+        Connection conn = connectionPool.getConnection();
         try (PreparedStatement insertStmt = conn.prepareStatement(INSERT_TASKS_TO_ASSIGNMENT)) {
             for (Task t : assignment.getTasks()) {
                 insertStmt.setLong(1, t.getId());
@@ -59,33 +66,6 @@ public class AssignmentDaoImpl implements AssignmentDao {
                 insertStmt.executeUpdate();
             }
 
-        }
-        addTasks(assignment);
-    }
-
-    @SneakyThrows
-    private void addTasks(Assignment assignment) {
-        String FETCH_TASKS = """
-                SELECT tasks.task_id, name, duration, cost_per_hour, value FROM assignments_tasks
-                JOIN tasks USING (task_id)
-                JOIN specializations USING (specialization_id)
-                WHERE assignment_id=?
-                    """;
-        Connection conn = connectionPool.getConnection();
-        assignment.setTasks(new ArrayList<>());
-        try (PreparedStatement fetchStmt = conn.prepareStatement(FETCH_TASKS)) {
-            fetchStmt.setLong(1, assignment.getId());
-            try (ResultSet rs = fetchStmt.executeQuery()) {
-                while (rs.next()) {
-                    assignment.getTasks().add(Task.builder()
-                            .id(rs.getLong(1))
-                            .name(rs.getString(2))
-                            .duration(rs.getInt(3))
-                            .costPerHour(rs.getBigDecimal(4))
-                            .requiredSpecialization(Specialization.valueOf(rs.getString(5)))
-                            .build());
-                }
-            }
         }
     }
 
@@ -145,7 +125,6 @@ public class AssignmentDaoImpl implements AssignmentDao {
                         .userCommentary(rs.getString(15))
                         .employeeCommentary(rs.getString(16))
                         .build();
-                addTasks(assignment);
                 return Optional.of(assignment);
             }
         }
@@ -207,7 +186,6 @@ public class AssignmentDaoImpl implements AssignmentDao {
                             .employeeCommentary(rs.getString(16))
                             .id(rs.getLong(17))
                             .build();
-                    addTasks(assignment);
                     assignmentList.add(assignment);
                 }
                 return assignmentList;

@@ -1,19 +1,18 @@
 package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.OrderDao;
-import com.gznznzjsn.carservice.domain.carservice.order.Order;
-import com.gznznzjsn.carservice.domain.carservice.User;
-import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
 import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
+import com.gznznzjsn.carservice.domain.carservice.User;
+import com.gznznzjsn.carservice.domain.carservice.order.Order;
+import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.Objects;
 import java.util.Optional;
 
-@Repository
+//@Repository
 @RequiredArgsConstructor
 public class OrderDaoImpl implements OrderDao {
 

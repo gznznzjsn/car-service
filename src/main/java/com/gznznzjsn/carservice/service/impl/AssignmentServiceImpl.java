@@ -13,6 +13,7 @@ import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
 import com.gznznzjsn.carservice.service.AssignmentService;
 import com.gznznzjsn.carservice.service.OrderService;
 import com.gznznzjsn.carservice.service.PeriodService;
+import com.gznznzjsn.carservice.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,12 +28,12 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final AssignmentDao assignmentDao;
     private final OrderService orderService;
     private final PeriodService periodService;
+    private final TaskService taskService;
 
 
     @Override
     @Transactional
     public Assignment create(Assignment assignment) {
-
         Order order = orderService.get(assignment.getOrder().getId());
         assignment.setOrder(order);
         if (!assignment.getOrder().getStatus().equals(OrderStatus.NOT_SENT)) {
@@ -43,6 +44,8 @@ public class AssignmentServiceImpl implements AssignmentService {
         }
         assignment.setStatus(AssignmentStatus.NOT_SENT);
         assignmentDao.create(assignment);
+        assignmentDao.createTasks(assignment);
+        assignment.setTasks(taskService.getTasks(assignment.getId()));
         return assignment;
     }
 
@@ -75,7 +78,6 @@ public class AssignmentServiceImpl implements AssignmentService {
                     update(assignmentToUpdate)
             );
         });
-
         return updatedAssignments;
     }
 
@@ -112,17 +114,22 @@ public class AssignmentServiceImpl implements AssignmentService {
     @Override
     @Transactional(readOnly = true)
     public Assignment get(Long assignmentId) {
-        return assignmentDao.read(assignmentId)
+        Assignment assignment = assignmentDao.read(assignmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Assignment with id = " + assignmentId + " doesn't exist!"));
+        assignment.setTasks(taskService.getTasks(assignment.getId()));
+        return assignment;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Assignment> getAllByOrderId(Long orderId) {
-        return assignmentDao.readAllByOrderId(orderId);
+        List<Assignment> assignments = assignmentDao.readAllByOrderId(orderId);
+        assignments.forEach(a -> a.setTasks(taskService.getTasks(a.getId())));
+        return assignments;
     }
 
     @Override
+    @Transactional
     public Assignment accept(Assignment assignment) {
         Assignment existingAssignment = get(assignment.getId());
         if (!existingAssignment.getStatus().equals(AssignmentStatus.UNDER_CONSIDERATION)) {

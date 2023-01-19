@@ -1,12 +1,19 @@
 spring:
-
   datasource:
     url: jdbc:postgresql://localhost:5432/car_service?currentSchema=my_schema
     username: postgres
     password: 1q2w3e
 
+
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
     default-schema: my_schema
+
+mybatis:
+  config-location: classpath:db/mybatis/mybatis-config.xml
+  mapper-locations: classpath:db/mybatis/mapper/*.xml
+  type-aliases-package: com.gznznzjsn.carservice.domain.carservice
+
+
 

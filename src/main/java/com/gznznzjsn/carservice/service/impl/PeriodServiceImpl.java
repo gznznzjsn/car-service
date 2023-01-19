@@ -20,9 +20,7 @@ public class PeriodServiceImpl implements PeriodService {
     @Override
     @Transactional
     public Period eraseAppropriate(LocalDateTime arrivalTime, Specialization specialization, int totalDuration) {
-
         Period period = getBy(arrivalTime, specialization, totalDuration);
-
         if (period.getEnd() - period.getStart() == totalDuration) {
             delete(period.getId());
         } else {

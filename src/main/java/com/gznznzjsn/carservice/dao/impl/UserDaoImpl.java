@@ -1,18 +1,17 @@
 package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.UserDao;
-import com.gznznzjsn.carservice.domain.carservice.User;
 import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
+import com.gznznzjsn.carservice.domain.carservice.User;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Optional;
 
-@Repository
+//@Repository
 @RequiredArgsConstructor
 public class UserDaoImpl implements UserDao {
 
@@ -20,7 +19,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     @SneakyThrows
-    public Optional<User> readUser(Long userId) {
+    public Optional<User> read(Long userId) {
         String FETCH_BY_ID = """
                 SELECT name
                 FROM users
@@ -39,7 +38,6 @@ public class UserDaoImpl implements UserDao {
                         .name(rs.getString(1))
                         .build());
             }
-
         }
     }
 

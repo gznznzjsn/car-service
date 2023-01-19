@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User get(Long userId) {
-        return userDao.readUser(userId)
+        return userDao.read(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " doesn't exist!"));
     }
 

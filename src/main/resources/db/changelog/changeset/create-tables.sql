@@ -102,7 +102,7 @@ create table assignments
     employee_id          bigint references employees on delete cascade,
     assignment_status_id bigint references assignment_statuses on delete cascade,
     start_time           timestamp,
-    final_cost           bigint,
+    final_cost           numeric,
     user_commentary      varchar(255),
     employee_commentary  varchar(255),
     constraint a_un unique (order_id, specialization_id)

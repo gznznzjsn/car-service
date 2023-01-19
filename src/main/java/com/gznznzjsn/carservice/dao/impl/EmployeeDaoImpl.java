@@ -1,12 +1,11 @@
 package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.EmployeeDao;
+import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
 import com.gznznzjsn.carservice.domain.carservice.Employee;
 import com.gznznzjsn.carservice.domain.carservice.Specialization;
-import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+//@Repository
 @RequiredArgsConstructor
 public class EmployeeDaoImpl implements EmployeeDao {
 
@@ -47,7 +46,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     @SneakyThrows
-    public Employee create(Employee employee) {
+    public void create(Employee employee) {
         String ADD_EMPLOYEE_QUERY = """
                     INSERT INTO employees (name, specialization_id)
                     VALUES (?,
@@ -65,7 +64,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
                 employee.setId(keys.getLong(1));
             }
         }
-        return employee;
     }
 
     @Override

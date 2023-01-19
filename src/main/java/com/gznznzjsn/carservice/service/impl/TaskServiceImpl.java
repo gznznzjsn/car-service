@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
@@ -16,10 +18,15 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = true)
-    public Task get(Long id) {
-        return taskDao.read(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task with id=" + id + " not found!"));
+    public Task get(Long taskId) {
+        return taskDao.read(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task with id=" + taskId + " not found!"));
 
+    }
+
+    @Override
+    public List<Task> getTasks(Long assignmentId) {
+        return taskDao.readTasks(assignmentId);
     }
 
 }
