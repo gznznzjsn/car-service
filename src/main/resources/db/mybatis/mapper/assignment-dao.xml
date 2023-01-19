@@ -1,63 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
 <mapper namespace="com.gznznzjsn.carservice.dao.AssignmentDao">
+
     <resultMap id="AssignmentResultMap" type="Assignment" autoMapping="false">
-        <id column="assignment_id" property="id" jdbcType="BIGINT"/>
-        <result column="a_specialization_value" property="specialization" jdbcType="VARCHAR"/>
-        <result column="a_status_value" property="status" jdbcType="VARCHAR"/>
-        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" javaType="java.time.LocalDateTime"/>
-        <result column="final_cost" property="finalCost" jdbcType="NUMERIC"/>
-        <result column="user_commentary" property="userCommentary" jdbcType="VARCHAR"/>
-        <result column="employee_commentary" property="employeeCommentary" jdbcType="VARCHAR"/>
-        <association column="order_id" property="order" javaType="Order" autoMapping="false">
-            <id column="order_id" property="id" jdbcType="BIGINT"/>
-            <result column="o_status_value" property="status" jdbcType="VARCHAR"/>
-            <result column="arrival_time" property="arrivalTime" jdbcType="TIMESTAMP"
-                    javaType="java.time.LocalDateTime"/>
-            <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
-            <result column="finished_at" property="finishedAt" jdbcType="TIMESTAMP"/>
-            <association column="user_id" property="user" javaType="User" notNullColumn="user_id" autoMapping="false">
-                <id column="user_id" property="id" jdbcType="BIGINT"/>
-                <result column="user_name" property="name" jdbcType="VARCHAR"/>
-            </association>
-        </association>
-        <association column="employee_id" property="employee" javaType="Employee" notNullColumn="employee_id"
-                     autoMapping="false">
-            <id column="employee_id" property="id" jdbcType="BIGINT"/>
-            <result column="e_specialization_value" property="specialization" jdbcType="VARCHAR"/>
-            <result column="employee_name" property="name" jdbcType="VARCHAR"/>
-        </association>
-        <collection column="task_id" javaType="ArrayList" property="tasks" ofType="Task" autoMapping="false">
-            <id column="task_id" property="id" jdbcType="BIGINT"/>
-            <result column="task_name" property="name" jdbcType="VARCHAR"/>
-            <result column="duration" property="duration" jdbcType="INTEGER"/>
-            <result column="cost_per_hour" property="costPerHour" jdbcType="NUMERIC"/>
-            <result column="t_specializations_value" property="specialization" jdbcType="VARCHAR"/>
-        </collection>
+        <id column="assignment_id" property="id"/>
+        <result column="assignment_specialization" property="specialization"/>
+        <result column="assignment_status" property="status"/>
+        <result column="assignment_start_time" property="startTime"/>
+        <result column="assignment_final_cost" property="finalCost"/>
+        <result column="assignment_user_commentary" property="userCommentary"/>
+        <result column="assignment_employee_commentary" property="employeeCommentary"/>
+        <association column="order_id" property="order" resultMap="com.gznznzjsn.carservice.dao.OrderDao.OrderResultMap"
+                     autoMapping="false"/>
+        <association property="employee"
+                     column="employee_id"
+                     resultMap="com.gznznzjsn.carservice.dao.EmployeeDao.EmployeeResultMap"
+                     notNullColumn="employee_id"
+                     autoMapping="false"/>
+        <collection column="task_id" javaType="ArrayList" resultMap="com.gznznzjsn.carservice.dao.TaskDao.TaskResultMap"
+                    property="tasks" ofType="Task" autoMapping="false"/>
     </resultMap>
+
     <sql id="select_assignment">
         SELECT assignment_id,
-               a_sp.value as a_specialization_value,
-               a_st.value as a_status_value,
-               start_time,
-               final_cost,
-               user_commentary,
-               employee_commentary,
-               order_id,
-               o_st.value as o_status_value,
-               arrival_time,
-               created_at,
-               finished_at,
-               user_id,
-               u.name     as user_name,
-               e.employee_id,
-               e.name     as employee_name,
-               e_sp.value as e_specialization_value,
-               task_id,
-               tasks.name as task_name,
-               duration,
-               cost_per_hour,
-               t_sp.value as t_specialization_value
+               a_sp.value          as "assignment_specialization",
+               a_st.value          as "assignment_status",
+               start_time          as "assignment_start_time",
+               final_cost          as "assignment_final_cost",
+               user_commentary     as "assignment_user_commentary",
+               employee_commentary as "assignment_employee_commentary",
+               order_id            as "order_id",
+               o_st.value          as "order_status",
+               arrival_time        as "order_arrival_time",
+               created_at          as "order_created_at",
+               finished_at         as "order_finished_at",
+               user_id             as "user_id",
+               u.name              as "user_name",
+               e.employee_id       as "employee_id",
+               e.name              as "employee_name",
+               e_sp.value          as "employee_specialization",
+               task_id             as "task_id",
+               tasks.name          as "task_name",
+               duration            as "task_duration",
+               cost_per_hour       as "task_cost_per_hour",
+               t_sp.value          as "task_specialization"
         FROM assignments a
                  JOIN specializations a_sp USING (specialization_id)
                  JOIN assignment_statuses a_st USING (assignment_status_id)
@@ -70,10 +57,12 @@
                  JOIN tasks USING (task_id)
                  JOIN specializations t_sp on t_sp.specialization_id = tasks.specialization_id
     </sql>
+
     <select id="read" resultMap="AssignmentResultMap">
-     <include refid="select_assignment"/>
-      WHERE a.assignment_id = #{assignmentId};
+        <include refid="select_assignment"/>
+        WHERE a.assignment_id = #{assignmentId};
     </select>
+
     <select id="readAllByOrderId" parameterType="Long" resultMap="AssignmentResultMap">
         <include refid="select_assignment"/>
         WHERE a.order_id = #{orderId};
@@ -87,6 +76,7 @@
                 (SELECT assignment_status_id FROM assignment_statuses WHERE value = #{status}), #{userCommentary},
                 #{employeeCommentary});
     </insert>
+
     <insert id="createTasks">
         INSERT INTO assignments_tasks (task_id, assignment_id)
         VALUES
@@ -94,6 +84,7 @@
             #{task.id},#{id}
         </foreach>
     </insert>
+
     <update id="update">
         UPDATE assignments
         SET specialization_id=(SELECT specialization_id FROM specializations WHERE value = #{specialization}),
@@ -105,4 +96,5 @@
             employee_commentary = #{employeeCommentary}
         WHERE assignment_id = #{id}
     </update>
+
 </mapper>
