@@ -60,11 +60,6 @@ values ('employee_A', 1),
        ('emloyee_C', 1);
 
 
---changeset gznznzjsn:fulfill-users
-insert into users (name)
-values ('user_A'),
-       ('user_B');
-
 --changeset gznznzjsn:fulfill-periods
 insert into periods (employee_id, period_date, period_start, period_end)
 values (1, '2023-01-11', 8, 20),
@@ -72,5 +67,14 @@ values (1, '2023-01-11', 8, 20),
        (2, '2023-01-12', 8, 20),
        (2, '2023-01-13', 8, 20),
        (3, '2023-01-11', 8, 20),
-       (2, '2023-01-20', 8, 20)
+       (2, '2023-01-20', 8, 20);
 
+--changeset gznznzjsn:fulfill-roles
+insert into roles (value)
+values ('USER'),
+       ('ADMIN');
+
+-- --changeset gznznzjsn:fulfill-users
+-- insert into users (name)
+-- values ('user_A'),
+--        ('user_B');

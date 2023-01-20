@@ -1,7 +1,7 @@
 package com.gznznzjsn.carservice.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
+import com.gznznzjsn.carservice.domain.order.OrderStatus;
 import com.gznznzjsn.carservice.web.dto.group.OnCreateAssignment;
 import com.gznznzjsn.carservice.web.dto.group.OnCreateOrder;
 import jakarta.validation.Valid;

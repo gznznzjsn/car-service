@@ -13,3 +13,4 @@ mybatis:
   config-location: classpath:db/mybatis/mybatis-config.xml
   mapper-locations: classpath:db/mybatis/mapper/*.xml
   type-aliases-package: com.gznznzjsn.carservice.domain.carservice
+

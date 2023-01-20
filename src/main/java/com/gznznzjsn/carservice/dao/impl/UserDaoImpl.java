@@ -2,7 +2,7 @@ package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.UserDao;
 import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
-import com.gznznzjsn.carservice.domain.carservice.User;
+import com.gznznzjsn.carservice.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -19,7 +19,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     @SneakyThrows
-    public Optional<User> read(Long userId) {
+    public Optional<User> findById(Long userId) {
         String FETCH_BY_ID = """
                 SELECT name
                 FROM users
@@ -39,6 +39,16 @@ public class UserDaoImpl implements UserDao {
                         .build());
             }
         }
+    }
+
+    @Override //todo not implemented
+    public Optional<User> findByEmail(String email) {//todo
+        return Optional.empty();
+    }
+
+    @Override // todo
+    public void create(User user) {
+
     }
 
 }

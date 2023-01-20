@@ -22,7 +22,7 @@
         <postgresql.version>42.5.1</postgresql.version>
         <mybatis-starter.version>3.0.1</mybatis-starter.version>
         <mybatis.version>3.5.11</mybatis.version>
-        <jwt.version>0.9.1</jwt.version>
+        <jwt.version>0.11.5</jwt.version>
     </properties>
 
     <dependencies>
@@ -35,12 +35,6 @@
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>${mybatis-starter.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>${mybatis.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -71,8 +65,23 @@
         <!-- OTHER DEPENDENCIES-->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
+            <artifactId>jjwt-api</artifactId>
             <version>${jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${mybatis.version}</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>

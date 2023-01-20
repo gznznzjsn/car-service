@@ -37,6 +37,9 @@
                finished_at         as "order_finished_at",
                user_id             as "user_id",
                u.name              as "user_name",
+               email               as "user_email",
+               password            as "user_password",
+               r.value             as "user_role",
                e.employee_id       as "employee_id",
                e.name              as "employee_name",
                e_sp.value          as "employee_specialization",
@@ -51,6 +54,7 @@
                  JOIN orders o USING (order_id)
                  JOIN statuses o_st USING (status_id)
                  LEFT JOIN users u USING (user_id)
+                 JOIN roles r on r.role_id = u.role_id
                  LEFT JOIN employees e USING (employee_id)
                  FULL OUTER JOIN specializations e_sp on e_sp.specialization_id = e.specialization_id
                  JOIN assignments_tasks USING (assignment_id)
@@ -58,12 +62,12 @@
                  JOIN specializations t_sp on t_sp.specialization_id = tasks.specialization_id
     </sql>
 
-    <select id="read" resultMap="AssignmentResultMap">
+    <select id="findById" resultMap="AssignmentResultMap">
         <include refid="select_assignment"/>
         WHERE a.assignment_id = #{assignmentId};
     </select>
 
-    <select id="readAllByOrderId" parameterType="Long" resultMap="AssignmentResultMap">
+    <select id="findAllByOrderId" parameterType="Long" resultMap="AssignmentResultMap">
         <include refid="select_assignment"/>
         WHERE a.order_id = #{orderId};
     </select>

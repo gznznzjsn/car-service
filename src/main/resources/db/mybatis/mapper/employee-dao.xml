@@ -21,7 +21,7 @@
                 (SELECT specialization_id FROM specializations WHERE value = #{specialization}));
     </insert>
 
-    <select id="read" parameterType="Long" resultMap="EmployeeResultMap">
+    <select id="findById" parameterType="Long" resultMap="EmployeeResultMap">
         SELECT
         <include refid="base_column_list"/>
         FROM employees
@@ -29,7 +29,7 @@
         WHERE employee_id=#{employeeId}
     </select>
 
-    <select id="readAll" resultMap="EmployeeResultMap">
+    <select id="findAll" resultMap="EmployeeResultMap">
         SELECT
         <include refid="base_column_list"/>
         FROM employees

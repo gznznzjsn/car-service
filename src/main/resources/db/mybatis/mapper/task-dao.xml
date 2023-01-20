@@ -15,14 +15,14 @@
         task_id as "task_id" ,name as "task_name", duration as "task_duration", cost_per_hour as "task_cost_per_hour", value as "task_specialization"
     </sql>
 
-    <select id="read" parameterType="Long" resultMap="TaskResultMap">
+    <select id="findById" parameterType="Long" resultMap="TaskResultMap">
         SELECT
         <include refid="base_column_list"/>
         FROM tasks JOIN specializations USING (specialization_id)
         WHERE task_id = #{taskId};
     </select>
 
-    <select id="readTasks" parameterType="Long" resultMap="TaskResultMap">
+    <select id="findAllByAssignmentId" parameterType="Long" resultMap="TaskResultMap">
         SELECT
         <include refid="base_column_list"/>
         FROM assignments_tasks

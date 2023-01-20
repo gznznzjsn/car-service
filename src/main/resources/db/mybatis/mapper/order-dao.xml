@@ -18,17 +18,21 @@
         VALUES ((SELECT status_id FROM statuses WHERE value = #{status}), #{arrivalTime}, now(), #{user.id});
     </insert>
 
-    <select id="read" parameterType="Long" resultMap="OrderResultMap">
+    <select id="findById" parameterType="Long" resultMap="OrderResultMap">
         SELECT order_id       as "order_id",
                statuses.value as "order_status",
                arrival_time   as "order_arrival_time",
                created_at     as "order_created_at",
                finished_at    as "order_finished_at",
                user_id        as "user_id",
-               name           as "user_name"
+               name           as "user_name" ,
+               email          as "user_email",
+               password       as "user_password",
+               r.value          as "user_role"
         FROM orders
                  JOIN statuses USING (status_id)
                  JOIN users USING (user_id)
+        JOIN roles r on r.role_id = users.role_id
         WHERE order_id = #{orderId};
     </select>
 

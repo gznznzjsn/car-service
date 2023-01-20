@@ -1,6 +1,6 @@
 package com.gznznzjsn.carservice.web.dto.mapper;
 
-import com.gznznzjsn.carservice.domain.carservice.order.Order;
+import com.gznznzjsn.carservice.domain.order.Order;
 import com.gznznzjsn.carservice.web.dto.OrderDto;
 import org.mapstruct.Mapper;
 

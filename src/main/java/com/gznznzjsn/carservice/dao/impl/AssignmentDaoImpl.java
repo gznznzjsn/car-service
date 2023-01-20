@@ -1,13 +1,15 @@
 package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.AssignmentDao;
-import com.gznznzjsn.carservice.domain.carservice.*;
-import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
-import com.gznznzjsn.carservice.domain.carservice.assignment.AssignmentStatus;
-import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
-import com.gznznzjsn.carservice.domain.carservice.Specialization;
-import com.gznznzjsn.carservice.domain.carservice.order.Order;
+import com.gznznzjsn.carservice.domain.Employee;
+import com.gznznzjsn.carservice.domain.Task;
+import com.gznznzjsn.carservice.domain.assignment.Assignment;
+import com.gznznzjsn.carservice.domain.assignment.AssignmentStatus;
+import com.gznznzjsn.carservice.domain.order.OrderStatus;
+import com.gznznzjsn.carservice.domain.Specialization;
+import com.gznznzjsn.carservice.domain.order.Order;
 import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
+import com.gznznzjsn.carservice.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -71,7 +73,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
 
     @Override
     @SneakyThrows
-    public Optional<Assignment> read(Long assignmentId) {
+    public Optional<Assignment> findById(Long assignmentId) {
         String FETCH_BY_ID = """
                 SELECT order_id, st.value, arrival_time,created_at,finished_at, user_id,u.name,
                     sp.value,
@@ -132,7 +134,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
 
     @Override
     @SneakyThrows
-    public List<Assignment> readAllByOrderId(Long orderId) {
+    public List<Assignment> findAllByOrderId(Long orderId) {
         String FETCH_BY_ID = """
                 SELECT order_id, st.value, arrival_time,created_at,finished_at, user_id,u.name,
                     sp.value,

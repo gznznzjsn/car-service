@@ -1,6 +1,6 @@
 package com.gznznzjsn.carservice.web.controller;
 
-import com.gznznzjsn.carservice.domain.carservice.Employee;
+import com.gznznzjsn.carservice.domain.Employee;
 import com.gznznzjsn.carservice.service.EmployeeService;
 import com.gznznzjsn.carservice.web.dto.EmployeeDto;
 import com.gznznzjsn.carservice.web.dto.group.OnCreateEmployee;

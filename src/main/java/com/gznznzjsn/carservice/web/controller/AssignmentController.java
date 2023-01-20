@@ -1,6 +1,6 @@
 package com.gznznzjsn.carservice.web.controller;
 
-import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
+import com.gznznzjsn.carservice.domain.assignment.Assignment;
 import com.gznznzjsn.carservice.service.AssignmentService;
 import com.gznznzjsn.carservice.web.dto.AssignmentDto;
 import com.gznznzjsn.carservice.web.dto.group.OnAccept;

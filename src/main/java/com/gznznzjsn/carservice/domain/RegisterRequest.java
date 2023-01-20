@@ -1,19 +1,16 @@
-package com.gznznzjsn.carservice.domain.carservice;
+package com.gznznzjsn.carservice.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employee {
-
-    private Long id;
+public class RegisterRequest { //todo todto
     private String name;
-    private Specialization specialization;
-
+    private String email;
+    private String password;
 }
