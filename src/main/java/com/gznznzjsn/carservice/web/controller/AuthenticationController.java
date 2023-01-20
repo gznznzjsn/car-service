@@ -1,6 +1,6 @@
 package com.gznznzjsn.carservice.web.controller;
 
-import com.gznznzjsn.carservice.domain.AuthEntity;
+import com.gznznzjsn.carservice.domain.user.AuthEntity;
 import com.gznznzjsn.carservice.service.AuthenticationService;
 import com.gznznzjsn.carservice.web.dto.AuthEntityDto;
 import com.gznznzjsn.carservice.web.dto.group.OnAuthenticate;

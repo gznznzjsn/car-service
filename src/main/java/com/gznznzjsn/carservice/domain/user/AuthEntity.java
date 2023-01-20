@@ -1,4 +1,4 @@
-package com.gznznzjsn.carservice.domain;
+package com.gznznzjsn.carservice.domain.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

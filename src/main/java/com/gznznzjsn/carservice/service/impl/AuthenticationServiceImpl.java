@@ -1,6 +1,6 @@
 package com.gznznzjsn.carservice.service.impl;
 
-import com.gznznzjsn.carservice.domain.AuthEntity;
+import com.gznznzjsn.carservice.domain.user.AuthEntity;
 import com.gznznzjsn.carservice.domain.user.Role;
 import com.gznznzjsn.carservice.domain.user.User;
 import com.gznznzjsn.carservice.service.AuthenticationService;

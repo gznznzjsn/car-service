@@ -3,6 +3,7 @@ package com.gznznzjsn.carservice.web.controller;
 import com.gznznzjsn.carservice.domain.exception.IllegalActionException;
 import com.gznznzjsn.carservice.domain.exception.NotEnoughResourcesException;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
+import com.gznznzjsn.carservice.domain.exception.UniqueResourceException;
 import com.gznznzjsn.carservice.web.dto.ExceptionDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -30,6 +31,15 @@ public class ControllerAdvisor {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ExceptionDto handleNotEnoughResources(
             ResourceNotFoundException e) {
+        return ExceptionDto.builder()
+                .message(e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(UniqueResourceException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ExceptionDto handleUniqueResource(
+            UniqueResourceException e) {
         return ExceptionDto.builder()
                 .message(e.getMessage())
                 .build();

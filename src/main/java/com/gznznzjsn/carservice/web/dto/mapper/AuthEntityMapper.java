@@ -1,6 +1,6 @@
 package com.gznznzjsn.carservice.web.dto.mapper;
 
-import com.gznznzjsn.carservice.domain.AuthEntity;
+import com.gznznzjsn.carservice.domain.user.AuthEntity;
 import com.gznznzjsn.carservice.web.dto.AuthEntityDto;
 import org.mapstruct.Mapper;
 

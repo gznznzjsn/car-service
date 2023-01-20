@@ -1,6 +1,7 @@
 package com.gznznzjsn.carservice.service.impl;
 
 import com.gznznzjsn.carservice.dao.UserDao;
+import com.gznznzjsn.carservice.domain.exception.UniqueResourceException;
 import com.gznznzjsn.carservice.domain.user.User;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
 import com.gznznzjsn.carservice.service.UserService;
@@ -29,6 +30,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
+        if(userDao.findByEmail(user.getEmail()).isPresent()){
+            throw new UniqueResourceException("User with email "+ user.getEmail()+" already exists!");
+        }
         userDao.create(user);
         return user;
     }
