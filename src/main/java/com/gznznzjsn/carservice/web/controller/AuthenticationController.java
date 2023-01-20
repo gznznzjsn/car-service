@@ -1,11 +1,13 @@
 package com.gznznzjsn.carservice.web.controller;
 
-import com.gznznzjsn.carservice.domain.AuthenticationRequest;
-import com.gznznzjsn.carservice.domain.AuthenticationResponse;
-import com.gznznzjsn.carservice.domain.RegisterRequest;
+import com.gznznzjsn.carservice.domain.AuthEntity;
 import com.gznznzjsn.carservice.service.AuthenticationService;
+import com.gznznzjsn.carservice.web.dto.AuthEntityDto;
+import com.gznznzjsn.carservice.web.dto.group.OnAuthenticate;
+import com.gznznzjsn.carservice.web.dto.group.OnRegister;
+import com.gznznzjsn.carservice.web.dto.mapper.AuthEntityMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,15 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+    private final AuthEntityMapper authEntityMapper;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authenticationService.register(request));
+    public AuthEntityDto register(@Validated(OnRegister.class) @RequestBody AuthEntityDto authEntityDto) {
+        AuthEntity authEntity = authEntityMapper.toEntity(authEntityDto);
+        return authEntityMapper.toDto(authenticationService.register(authEntity));
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+    public AuthEntityDto authenticate(@Validated(OnAuthenticate.class) @RequestBody AuthEntityDto authEntityDto) {
+        AuthEntity authEntity = authEntityMapper.toEntity(authEntityDto);
+        return authEntityMapper.toDto(authenticationService.authenticate(authEntity));
     }
 
 }

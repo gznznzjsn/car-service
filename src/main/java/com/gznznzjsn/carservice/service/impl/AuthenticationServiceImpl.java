@@ -1,8 +1,6 @@
 package com.gznznzjsn.carservice.service.impl;
 
-import com.gznznzjsn.carservice.domain.AuthenticationRequest;
-import com.gznznzjsn.carservice.domain.AuthenticationResponse;
-import com.gznznzjsn.carservice.domain.RegisterRequest;
+import com.gznznzjsn.carservice.domain.AuthEntity;
 import com.gznznzjsn.carservice.domain.user.Role;
 import com.gznznzjsn.carservice.domain.user.User;
 import com.gznznzjsn.carservice.service.AuthenticationService;
@@ -24,31 +22,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthEntity register(AuthEntity authEntity) {
         User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .name(authEntity.getName())
+                .email(authEntity.getEmail())
+                .password(passwordEncoder.encode(authEntity.getPassword()))
                 .role(Role.USER)
                 .build();
         userService.create(user);
         String jwt = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
+        return AuthEntity.builder()
                 .token(jwt)
                 .build();
     }
 
     @Override
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthEntity authenticate(AuthEntity authEntity) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
+                        authEntity.getEmail(),
+                        authEntity.getPassword()
                 )
         );
-        User user = userService.getByEmail(request.getEmail());
+        User user = userService.getByEmail(authEntity.getEmail());
         String jwt = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
+        return AuthEntity.builder()
                 .token(jwt)
                 .build();
     }

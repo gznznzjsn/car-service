@@ -9,8 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest { //todo todto
+public class AuthEntity {
+
     private String name;
     private String email;
     private String password;
+    private String token;
+
 }

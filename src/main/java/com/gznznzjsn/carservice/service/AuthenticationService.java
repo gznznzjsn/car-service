@@ -1,13 +1,11 @@
 package com.gznznzjsn.carservice.service;
 
-import com.gznznzjsn.carservice.domain.AuthenticationRequest;
-import com.gznznzjsn.carservice.domain.AuthenticationResponse;
-import com.gznznzjsn.carservice.domain.RegisterRequest;
+import com.gznznzjsn.carservice.domain.AuthEntity;
 
 public interface AuthenticationService {
 
-    AuthenticationResponse register(RegisterRequest request);
+    AuthEntity register(AuthEntity request);
 
-    AuthenticationResponse authenticate(AuthenticationRequest request);
+    AuthEntity authenticate(AuthEntity request);
 
 }
