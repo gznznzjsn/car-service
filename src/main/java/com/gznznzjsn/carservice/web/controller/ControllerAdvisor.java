@@ -1,11 +1,9 @@
 package com.gznznzjsn.carservice.web.controller;
 
-import com.gznznzjsn.carservice.domain.exception.IllegalActionException;
-import com.gznznzjsn.carservice.domain.exception.NotEnoughResourcesException;
-import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
-import com.gznznzjsn.carservice.domain.exception.UniqueResourceException;
+import com.gznznzjsn.carservice.domain.exception.*;
 import com.gznznzjsn.carservice.web.dto.ExceptionDto;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -54,6 +52,13 @@ public class ControllerAdvisor {
                 .build();
     }
 
+    @ExceptionHandler({AccessDeniedException.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ExceptionDto handleAccessDenied() {
+        return ExceptionDto.builder()
+                .message("Access denied!")
+                .build();
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

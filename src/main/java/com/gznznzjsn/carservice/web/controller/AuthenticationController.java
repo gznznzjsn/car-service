@@ -4,6 +4,7 @@ import com.gznznzjsn.carservice.domain.user.AuthEntity;
 import com.gznznzjsn.carservice.service.AuthenticationService;
 import com.gznznzjsn.carservice.web.dto.AuthEntityDto;
 import com.gznznzjsn.carservice.web.dto.group.OnAuthenticate;
+import com.gznznzjsn.carservice.web.dto.group.OnRefresh;
 import com.gznznzjsn.carservice.web.dto.group.OnRegister;
 import com.gznznzjsn.carservice.web.dto.mapper.AuthEntityMapper;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,18 @@ public class AuthenticationController {
     public AuthEntityDto authenticate(@Validated(OnAuthenticate.class) @RequestBody AuthEntityDto authEntityDto) {
         AuthEntity authEntity = authEntityMapper.toEntity(authEntityDto);
         return authEntityMapper.toDto(authenticationService.authenticate(authEntity));
+    }
+
+    @PostMapping("/access")
+    public AuthEntityDto getAccessToken(@Validated(OnRefresh.class) @RequestBody AuthEntityDto authEntityDto) {
+        AuthEntity authEntity = authEntityMapper.toEntity(authEntityDto);
+        return authEntityMapper.toDto(authenticationService.getAccessToken(authEntity));
+    }
+
+    @PostMapping("/refresh")
+    public AuthEntityDto refresh(@Validated(OnRefresh.class) @RequestBody AuthEntityDto authEntityDto) {
+        AuthEntity authEntity = authEntityMapper.toEntity(authEntityDto);
+        return authEntityMapper.toDto(authenticationService.refresh(authEntity));
     }
 
 }

@@ -14,6 +14,7 @@ public class AuthEntity {
     private String name;
     private String email;
     private String password;
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 
 }

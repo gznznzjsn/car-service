@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -18,61 +19,93 @@ import java.util.function.Function;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    public static final String SECRET_KEY = "397A244326452948404D635166546A576E5A7234753778214125442A472D4A61";
+    private static Key accessKey;
+    private static Key refreshKey;
 
-    @Override
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    @Value("${gznznzjsn.secrets.access-key}")
+    public void setAccessKey(String key) {
+        accessKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-
-    @Override
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    @Value("${gznznzjsn.secrets.refresh-key}")
+    public void setRefreshKey(String key) {
+        refreshKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
     }
 
     @Override
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateAccessToken(UserDetails userDetails) {
+        return generateAccessToken(new HashMap<>(), userDetails);
+    }
+
+    @Override
+    public String generateAccessToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
+                .claim("role", userDetails.getAuthorities())
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .signWith(accessKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     @Override
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    public String generateRefreshToken(UserDetails userDetails) {
+        return Jwts
+                .builder()
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
+                .signWith(refreshKey, SignatureAlgorithm.HS256)
+                .compact();
     }
 
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    @Override
+    public boolean isValidAccessToken(String token) {
+        return isValidToken(token, accessKey);
     }
 
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    @Override
+    public boolean isValidRefreshToken(String token) {
+        return isValidToken(token, refreshKey);
     }
 
-    private Claims extractAllClaims(String token) {
+    private boolean isValidToken(String token, Key key) {
+        try {
+            return extractClaim(token, Claims::getExpiration, key).after(new Date(System.currentTimeMillis()));
+        } catch (Exception ignored) {
+        }
+        return false;
+    }
+
+    @Override
+    public String extractUsernameFromAccessToken(String token) {
+        return extractUsername(token, accessKey);
+    }
+
+    private String extractUsername(String token, Key key) {
+        return extractClaim(token, Claims::getSubject, key);
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver, Key key) {
+        Claims claims = extractAllClaims(token, key);
+        return claimsResolver.apply(claims);
+    }
+
+    @Override
+    public String extractRefreshSubject(String token) {
+        return extractClaim(token, Claims::getSubject, refreshKey);
+    }
+
+
+    private Claims extractAllClaims(String token, Key key) {
         return Jwts
                 .parserBuilder()
-                .setSigningKey(getSigningKey())
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
-
-    private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
     }
 
 }

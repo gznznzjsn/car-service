@@ -2,6 +2,7 @@ package com.gznznzjsn.carservice.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gznznzjsn.carservice.web.dto.group.OnAuthenticate;
+import com.gznznzjsn.carservice.web.dto.group.OnRefresh;
 import com.gznznzjsn.carservice.web.dto.group.OnRegister;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -26,7 +27,10 @@ public record AuthEntityDto(
         String password,
 
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-        String token
+        String accessToken,
+
+        @NotBlank(message = "Refresh token can't be blank!", groups = {OnRefresh.class})
+        String refreshToken
 
 ) {
 }

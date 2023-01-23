@@ -7,6 +7,7 @@ import com.gznznzjsn.carservice.service.AuthenticationService;
 import com.gznznzjsn.carservice.service.JwtService;
 import com.gznznzjsn.carservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,9 +31,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .role(Role.USER)
                 .build();
         userService.create(user);
-        String jwt = jwtService.generateToken(user);
+        String accessJwt = jwtService.generateAccessToken(user);
+        String refreshJwt = jwtService.generateRefreshToken(user);
         return AuthEntity.builder()
-                .token(jwt)
+                .accessToken(accessJwt)
+                .refreshToken(refreshJwt)
                 .build();
     }
 
@@ -45,9 +48,42 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 )
         );
         User user = userService.getByEmail(authEntity.getEmail());
-        String jwt = jwtService.generateToken(user);
+        String accessJwt = jwtService.generateAccessToken(user);
+        String refreshJwt = jwtService.generateRefreshToken(user);
         return AuthEntity.builder()
-                .token(jwt)
+                .accessToken(accessJwt)
+                .refreshToken(refreshJwt)
                 .build();
     }
+
+    @Override
+    public AuthEntity getAccessToken(AuthEntity authEntity) {
+        String refreshToken = authEntity.getRefreshToken();
+        if (!jwtService.isValidRefreshToken(refreshToken)) {
+            throw new AccessDeniedException("Access denied!");
+        }
+        String email = jwtService.extractRefreshSubject(refreshToken);
+        User user = userService.getByEmail(email);
+        String accessToken = jwtService.generateAccessToken(user);
+        return AuthEntity.builder()
+                .accessToken(accessToken)
+                .build();
+    }
+
+    @Override
+    public AuthEntity refresh(AuthEntity authEntity) {
+        String refreshToken = authEntity.getRefreshToken();
+        if (!jwtService.isValidRefreshToken(refreshToken)) {
+            throw new AccessDeniedException("Access denied!");
+        }
+        String email = jwtService.extractRefreshSubject(refreshToken);
+        User user = userService.getByEmail(email);
+        String accessToken = jwtService.generateAccessToken(user);
+        String newRefreshToken = jwtService.generateRefreshToken(user);
+        return AuthEntity.builder()
+                .accessToken(accessToken)
+                .refreshToken(newRefreshToken)
+                .build();
+    }
+
 }

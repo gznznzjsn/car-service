@@ -8,4 +8,8 @@ public interface AuthenticationService {
 
     AuthEntity authenticate(AuthEntity request);
 
+    AuthEntity getAccessToken(AuthEntity authEntity);
+
+    AuthEntity refresh(AuthEntity authEntity);
+
 }

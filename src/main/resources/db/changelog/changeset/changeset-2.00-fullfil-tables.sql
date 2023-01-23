@@ -72,9 +72,4 @@ values (1, '2023-01-11', 8, 20),
 --changeset gznznzjsn:fulfill-roles
 insert into roles (value)
 values ('USER'),
-       ('ADMIN');
-
--- --changeset gznznzjsn:fulfill-users
--- insert into users (name)
--- values ('user_A'),
---        ('user_B');
+       ('EMPLOYEE_MANAGER');
