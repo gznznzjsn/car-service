@@ -57,20 +57,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthEntity getAccessToken(AuthEntity authEntity) {
-        String refreshToken = authEntity.getRefreshToken();
-        if (!jwtService.isValidRefreshToken(refreshToken)) {
-            throw new AccessDeniedException("Access denied!");
-        }
-        String email = jwtService.extractRefreshSubject(refreshToken);
-        User user = userService.getByEmail(email);
-        String accessToken = jwtService.generateAccessToken(user);
-        return AuthEntity.builder()
-                .accessToken(accessToken)
-                .build();
-    }
-
-    @Override
     public AuthEntity refresh(AuthEntity authEntity) {
         String refreshToken = authEntity.getRefreshToken();
         if (!jwtService.isValidRefreshToken(refreshToken)) {

@@ -1,4 +1,4 @@
-package com.gznznzjsn.carservice.config;
+package com.gznznzjsn.carservice.web.security;
 
 import com.gznznzjsn.carservice.service.UserService;
 import lombok.RequiredArgsConstructor;

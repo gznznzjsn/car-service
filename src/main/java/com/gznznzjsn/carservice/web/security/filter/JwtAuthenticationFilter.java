@@ -1,4 +1,4 @@
-package com.gznznzjsn.carservice.config;
+package com.gznznzjsn.carservice.web.security.filter;
 
 import com.gznznzjsn.carservice.service.JwtService;
 import jakarta.servlet.FilterChain;

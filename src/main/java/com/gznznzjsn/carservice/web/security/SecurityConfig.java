@@ -1,5 +1,6 @@
-package com.gznznzjsn.carservice.config;
+package com.gznznzjsn.carservice.web.security;
 
+import com.gznznzjsn.carservice.web.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +26,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/users/**", "/api/v1/employees/**","/api/v1/assignments/**" ).authenticated()
+                .requestMatchers("/api/v1/users/**", "/api/v1/employees/**", "/api/v1/assignments/**").authenticated()
                 .anyRequest()
                 .permitAll()
                 .and()
@@ -37,12 +38,5 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-//    @Bean
-//    public MethodSecurityExpressionHandler createExpressionHandler(@Autowired ApplicationContext applicationContext) {
-//        var expressionHandler = new CustomMethodSecurityExpressionHandler();
-//        expressionHandler.setApplicationContext(applicationContext);
-//        return expressionHandler;
-//    }
 
 }

@@ -14,7 +14,12 @@ mybatis:
   mapper-locations: classpath:db/mybatis/mapper/*.xml
   type-aliases-package: com.gznznzjsn.carservice.domain.carservice
 
-gznznzjsn:
+springdoc:
+  override-with-generic-response: false
+  swagger-ui:
+    path: /api/v1/docs
+
+car-service:
   secrets:
     access-key: 397A244326452948404D635166546A576E5A7234753778214125442A472D4A61
     refresh-key: 442A472D4B614E645267556B58703273357638792F423F4528482B4D62516553

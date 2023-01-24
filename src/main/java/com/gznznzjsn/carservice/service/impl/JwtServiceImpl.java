@@ -22,12 +22,12 @@ public class JwtServiceImpl implements JwtService {
     private static Key accessKey;
     private static Key refreshKey;
 
-    @Value("${gznznzjsn.secrets.access-key}")
+    @Value("${car-service.secrets.access-key}")
     public void setAccessKey(String key) {
         accessKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
     }
 
-    @Value("${gznznzjsn.secrets.refresh-key}")
+    @Value("${car-service.secrets.refresh-key}")
     public void setRefreshKey(String key) {
         refreshKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
     }
