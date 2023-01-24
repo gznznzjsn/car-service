@@ -2,9 +2,9 @@ package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.PeriodDao;
 import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
-import com.gznznzjsn.carservice.domain.carservice.Employee;
-import com.gznznzjsn.carservice.domain.carservice.Period;
-import com.gznznzjsn.carservice.domain.carservice.Specialization;
+import com.gznznzjsn.carservice.domain.Employee;
+import com.gznznzjsn.carservice.domain.Period;
+import com.gznznzjsn.carservice.domain.Specialization;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -36,7 +36,7 @@ public class PeriodDaoImpl implements PeriodDao {
 
     @Override
     @SneakyThrows
-    public Optional<Period> readBy(LocalDateTime arrivalTime, Specialization specialization, int totalDuration) {
+    public Optional<Period> findBy(LocalDateTime arrivalTime, Specialization specialization, int totalDuration) {
         String FETCH_PERIOD = """
                 SELECT period_id,period_date,period_start,period_end, employee_id,name,specializations.value
                  FROM periods JOIN employees USING (employee_id)
@@ -96,7 +96,7 @@ public class PeriodDaoImpl implements PeriodDao {
 
     @Override
     @SneakyThrows
-    public Optional<Period> read(Long periodId) {
+    public Optional<Period> findById(Long periodId) {
         String FETCH_PERIOD = """
                 SELECT period_id,period_date,period_start,period_end, employee_id,name,value
                  FROM periods JOIN employees USING (employee_id)

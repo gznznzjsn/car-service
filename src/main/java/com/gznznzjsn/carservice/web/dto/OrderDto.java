@@ -1,9 +1,9 @@
 package com.gznznzjsn.carservice.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
-import com.gznznzjsn.carservice.web.dto.group.OnCreateAssignment;
+import com.gznznzjsn.carservice.domain.order.OrderStatus;
 import com.gznznzjsn.carservice.web.dto.group.OnCreateOrder;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
@@ -12,14 +12,15 @@ import java.time.LocalDateTime;
 
 public record OrderDto(
 
-        @NotNull(message = "Order id is mandatory!", groups = {OnCreateAssignment.class})
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         Long id,
 
-        @NotNull(message = "User must be set!", groups = {OnCreateOrder.class})
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         @Valid
         UserDto user,
 
         @NotNull(message = "Arrival time must be set!", groups = {OnCreateOrder.class})
+        @Schema(example = "2023-01-10T17:09:42.411000")
         LocalDateTime arrivalTime,
 
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)

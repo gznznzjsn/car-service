@@ -30,7 +30,7 @@
         WHERE period_id = #{id}
     </insert>
 
-    <select id="read" parameterType="Long" resultMap="PeriodResultMap">
+    <select id="findById" parameterType="Long" resultMap="PeriodResultMap">
         SELECT
         <include refid="base_column_list"/>
         FROM periods
@@ -39,7 +39,7 @@
         WHERE period_id = #{periodId}
     </select>
 
-    <select id="readBy" resultMap="PeriodResultMap">
+    <select id="findBy" resultMap="PeriodResultMap">
         SELECT
         <include refid="base_column_list"/>
         FROM periods

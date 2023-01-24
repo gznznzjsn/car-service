@@ -1,6 +1,6 @@
 package com.gznznzjsn.carservice.service;
 
-import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
+import com.gznznzjsn.carservice.domain.assignment.Assignment;
 
 import java.math.BigDecimal;
 import java.util.List;

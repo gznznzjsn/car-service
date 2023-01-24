@@ -5,12 +5,12 @@
 
     <typeAliases>
         <typeAlias alias="Long" type="java.lang.Long"/>
-        <typeAlias type="com.gznznzjsn.carservice.domain.carservice.Employee" alias="Employee"/>
-        <typeAlias type="com.gznznzjsn.carservice.domain.carservice.User" alias="User"/>
-        <typeAlias type="com.gznznzjsn.carservice.domain.carservice.Task" alias="Task"/>
-        <typeAlias type="com.gznznzjsn.carservice.domain.carservice.order.Order" alias="Order"/>
-        <typeAlias type="com.gznznzjsn.carservice.domain.carservice.assignment.Assignment" alias="Assignment"/>
-        <typeAlias type="com.gznznzjsn.carservice.domain.carservice.Period" alias="Period"/>
+        <typeAlias type="com.gznznzjsn.carservice.domain.Employee" alias="Employee"/>
+        <typeAlias type="com.gznznzjsn.carservice.domain.user.User" alias="User"/>
+        <typeAlias type="com.gznznzjsn.carservice.domain.Task" alias="Task"/>
+        <typeAlias type="com.gznznzjsn.carservice.domain.order.Order" alias="Order"/>
+        <typeAlias type="com.gznznzjsn.carservice.domain.assignment.Assignment" alias="Assignment"/>
+        <typeAlias type="com.gznznzjsn.carservice.domain.Period" alias="Period"/>
     </typeAliases>
 
 </configuration>

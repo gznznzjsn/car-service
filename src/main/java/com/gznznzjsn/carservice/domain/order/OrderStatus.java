@@ -1,4 +1,4 @@
-package com.gznznzjsn.carservice.domain.carservice.order;
+package com.gznznzjsn.carservice.domain.order;
 
 public enum OrderStatus {
 

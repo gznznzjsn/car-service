@@ -1,4 +1,4 @@
-package com.gznznzjsn.carservice.domain.carservice.assignment;
+package com.gznznzjsn.carservice.domain.assignment;
 
 public enum AssignmentStatus {
 

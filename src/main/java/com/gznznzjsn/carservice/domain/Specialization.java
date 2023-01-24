@@ -1,4 +1,4 @@
-package com.gznznzjsn.carservice.domain.carservice;
+package com.gznznzjsn.carservice.domain;
 
 public enum Specialization {
 

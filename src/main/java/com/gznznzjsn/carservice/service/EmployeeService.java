@@ -1,6 +1,6 @@
 package com.gznznzjsn.carservice.service;
 
-import com.gznznzjsn.carservice.domain.carservice.Employee;
+import com.gznznzjsn.carservice.domain.Employee;
 
 import java.util.List;
 

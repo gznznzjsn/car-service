@@ -1,12 +1,12 @@
 package com.gznznzjsn.carservice.service.impl;
 
 import com.gznznzjsn.carservice.dao.AssignmentDao;
-import com.gznznzjsn.carservice.domain.carservice.Period;
-import com.gznznzjsn.carservice.domain.carservice.Task;
-import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
-import com.gznznzjsn.carservice.domain.carservice.assignment.AssignmentStatus;
-import com.gznznzjsn.carservice.domain.carservice.order.Order;
-import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
+import com.gznznzjsn.carservice.domain.Period;
+import com.gznznzjsn.carservice.domain.Task;
+import com.gznznzjsn.carservice.domain.assignment.Assignment;
+import com.gznznzjsn.carservice.domain.assignment.AssignmentStatus;
+import com.gznznzjsn.carservice.domain.order.Order;
+import com.gznznzjsn.carservice.domain.order.OrderStatus;
 import com.gznznzjsn.carservice.domain.exception.IllegalActionException;
 import com.gznznzjsn.carservice.domain.exception.NotEnoughResourcesException;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
@@ -114,7 +114,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     @Override
     @Transactional(readOnly = true)
     public Assignment get(Long assignmentId) {
-        Assignment assignment = assignmentDao.read(assignmentId)
+        Assignment assignment = assignmentDao.findById(assignmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Assignment with id = " + assignmentId + " doesn't exist!"));
         assignment.setTasks(taskService.getTasks(assignment.getId()));
         return assignment;
@@ -123,7 +123,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     @Override
     @Transactional(readOnly = true)
     public List<Assignment> getAllByOrderId(Long orderId) {
-        List<Assignment> assignments = assignmentDao.readAllByOrderId(orderId);
+        List<Assignment> assignments = assignmentDao.findAllByOrderId(orderId);
         assignments.forEach(a -> a.setTasks(taskService.getTasks(a.getId())));
         return assignments;
     }

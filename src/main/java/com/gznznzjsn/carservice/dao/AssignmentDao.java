@@ -1,6 +1,6 @@
 package com.gznznzjsn.carservice.dao;
 
-import com.gznznzjsn.carservice.domain.carservice.assignment.Assignment;
+import com.gznznzjsn.carservice.domain.assignment.Assignment;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.Optional;
 @Mapper
 public interface AssignmentDao {
 
-    List<Assignment> readAllByOrderId(Long orderId);
+    List<Assignment> findAllByOrderId(Long orderId);
 
     void update(Assignment createdAssignment);
 
@@ -17,6 +17,6 @@ public interface AssignmentDao {
 
     void createTasks(Assignment assignment);
 
-    Optional<Assignment> read(Long assignmentId);
+    Optional<Assignment> findById(Long assignmentId);
 
 }

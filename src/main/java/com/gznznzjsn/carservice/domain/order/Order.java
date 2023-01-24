@@ -1,6 +1,6 @@
-package com.gznznzjsn.carservice.domain.carservice.order;
+package com.gznznzjsn.carservice.domain.order;
 
-import com.gznznzjsn.carservice.domain.carservice.User;
+import com.gznznzjsn.carservice.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

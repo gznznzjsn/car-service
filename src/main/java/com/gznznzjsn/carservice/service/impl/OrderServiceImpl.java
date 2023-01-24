@@ -1,9 +1,9 @@
 package com.gznznzjsn.carservice.service.impl;
 
 import com.gznznzjsn.carservice.dao.OrderDao;
-import com.gznznzjsn.carservice.domain.carservice.User;
-import com.gznznzjsn.carservice.domain.carservice.order.Order;
-import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
+import com.gznznzjsn.carservice.domain.user.User;
+import com.gznznzjsn.carservice.domain.order.Order;
+import com.gznznzjsn.carservice.domain.order.OrderStatus;
 import com.gznznzjsn.carservice.domain.exception.IllegalActionException;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
 import com.gznznzjsn.carservice.service.OrderService;
@@ -32,7 +32,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public Order get(Long orderId) {
-        return orderDao.read(orderId)
+        return orderDao.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order with id = " + orderId + " doesn't exist!"));
     }
 

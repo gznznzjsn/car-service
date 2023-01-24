@@ -1,19 +1,20 @@
-package com.gznznzjsn.carservice.domain.carservice;
+package com.gznznzjsn.carservice.domain.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employee {
+public class AuthEntity {
 
-    private Long id;
     private String name;
-    private Specialization specialization;
+    private String email;
+    private String password;
+    private String accessToken;
+    private String refreshToken;
 
 }

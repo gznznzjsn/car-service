@@ -1,8 +1,8 @@
 package com.gznznzjsn.carservice.service.impl;
 
 import com.gznznzjsn.carservice.dao.PeriodDao;
-import com.gznznzjsn.carservice.domain.carservice.Period;
-import com.gznznzjsn.carservice.domain.carservice.Specialization;
+import com.gznznzjsn.carservice.domain.Period;
+import com.gznznzjsn.carservice.domain.Specialization;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
 import com.gznznzjsn.carservice.service.PeriodService;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ public class PeriodServiceImpl implements PeriodService {
     @Override
     @Transactional(readOnly = true)
     public Period getBy(LocalDateTime arrivalTime, Specialization specialization, int totalDuration) {
-        return periodDao.readBy(arrivalTime, specialization, totalDuration).orElseThrow(
+        return periodDao.findBy(arrivalTime, specialization, totalDuration).orElseThrow(
                 () -> new ResourceNotFoundException("No free time periods for such parameters: arrival time = " + arrivalTime + ", specialization = " + specialization.name() + ", total assignment duration = " + totalDuration)
         );
     }
@@ -70,7 +70,7 @@ public class PeriodServiceImpl implements PeriodService {
     @Override
     @Transactional(readOnly = true)
     public Period get(Long periodId) {
-        return periodDao.read(periodId).orElseThrow(
+        return periodDao.findById(periodId).orElseThrow(
                 () -> new ResourceNotFoundException("Periods with id = " + periodId + " not found!")
         );
     }

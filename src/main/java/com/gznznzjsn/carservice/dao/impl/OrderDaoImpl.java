@@ -2,9 +2,9 @@ package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.OrderDao;
 import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
-import com.gznznzjsn.carservice.domain.carservice.User;
-import com.gznznzjsn.carservice.domain.carservice.order.Order;
-import com.gznznzjsn.carservice.domain.carservice.order.OrderStatus;
+import com.gznznzjsn.carservice.domain.user.User;
+import com.gznznzjsn.carservice.domain.order.Order;
+import com.gznznzjsn.carservice.domain.order.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -42,7 +42,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     @SneakyThrows
-    public Optional<Order> read(Long orderId) {
+    public Optional<Order> findById(Long orderId) {
         String FETCH_BY_ID = """
                 SELECT value, arrival_time,created_at,finished_at, user_id, name
                 FROM orders JOIN statuses USING (status_id)

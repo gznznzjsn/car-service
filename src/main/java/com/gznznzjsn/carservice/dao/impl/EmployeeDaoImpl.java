@@ -2,8 +2,8 @@ package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.EmployeeDao;
 import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
-import com.gznznzjsn.carservice.domain.carservice.Employee;
-import com.gznznzjsn.carservice.domain.carservice.Specialization;
+import com.gznznzjsn.carservice.domain.Employee;
+import com.gznznzjsn.carservice.domain.Specialization;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -23,7 +23,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     @SneakyThrows
-    public List<Employee> readAll() {
+    public List<Employee> findAll() {
         String FETCH_ALL_QUERY = """
                 SELECT employee_id, name, specializations.value FROM employees
                 JOIN specializations USING(specialization_id);
@@ -68,7 +68,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     @SneakyThrows
-    public Optional<Employee> read(Long employeeId) {
+    public Optional<Employee> findById(Long employeeId) {
         String FETCH_BY_ID_QUERY = """
                 SELECT name, specializations.value
                 FROM employees JOIN specializations USING (specialization_id)

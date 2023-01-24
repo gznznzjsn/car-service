@@ -1,7 +1,7 @@
 package com.gznznzjsn.carservice.service.impl;
 
 import com.gznznzjsn.carservice.dao.EmployeeDao;
-import com.gznznzjsn.carservice.domain.carservice.Employee;
+import com.gznznzjsn.carservice.domain.Employee;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
 import com.gznznzjsn.carservice.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional(readOnly = true)
     public List<Employee> getAll() {
-        return employeeDao.readAll();
+        return employeeDao.findAll();
     }
 
     @Override
@@ -32,7 +32,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional(readOnly = true)
     public Employee get(Long employeeId) {
-        return employeeDao.read(employeeId)
+        return employeeDao.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee with id=" + employeeId + " not found!"));
 
     }

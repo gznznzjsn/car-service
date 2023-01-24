@@ -1,8 +1,8 @@
 package com.gznznzjsn.carservice.dao.impl;
 
 import com.gznznzjsn.carservice.dao.TaskDao;
-import com.gznznzjsn.carservice.domain.carservice.Task;
-import com.gznznzjsn.carservice.domain.carservice.Specialization;
+import com.gznznzjsn.carservice.domain.Task;
+import com.gznznzjsn.carservice.domain.Specialization;
 import com.gznznzjsn.carservice.dao.impl.util.ConnectionPool;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -22,7 +22,7 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     @SneakyThrows
-    public Optional<Task> read(Long taskId) {
+    public Optional<Task> findById(Long taskId) {
         String FETCH_BY_ID_QUERY = """
                 SELECT name, duration, cost_per_hour,specializations.value
                 FROM tasks JOIN specializations USING (specialization_id)
@@ -48,7 +48,7 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     @SneakyThrows
-    public List<Task> readTasks(Long assignmentId) {
+    public List<Task> findAllByAssignmentId(Long assignmentId) {
         String FETCH_TASKS = """
                 SELECT tasks.task_id, name, duration, cost_per_hour, value FROM assignments_tasks
                 JOIN tasks USING (task_id)
