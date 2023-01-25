@@ -10,6 +10,6 @@ public interface TaskDao {
 
     Optional<Task> findById(Long taskId);
 
-
     List<Task> findAllByAssignmentId(Long assignmentId);
+
 }

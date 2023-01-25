@@ -2,14 +2,15 @@ package com.gznznzjsn.carservice.service.impl;
 
 import com.gznznzjsn.carservice.dao.AssignmentDao;
 import com.gznznzjsn.carservice.domain.Period;
+import com.gznznzjsn.carservice.domain.Specialization;
 import com.gznznzjsn.carservice.domain.Task;
 import com.gznznzjsn.carservice.domain.assignment.Assignment;
 import com.gznznzjsn.carservice.domain.assignment.AssignmentStatus;
-import com.gznznzjsn.carservice.domain.order.Order;
-import com.gznznzjsn.carservice.domain.order.OrderStatus;
 import com.gznznzjsn.carservice.domain.exception.IllegalActionException;
 import com.gznznzjsn.carservice.domain.exception.NotEnoughResourcesException;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
+import com.gznznzjsn.carservice.domain.order.Order;
+import com.gznznzjsn.carservice.domain.order.OrderStatus;
 import com.gznznzjsn.carservice.service.AssignmentService;
 import com.gznznzjsn.carservice.service.OrderService;
 import com.gznznzjsn.carservice.service.PeriodService;
@@ -30,23 +31,35 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final PeriodService periodService;
     private final TaskService taskService;
 
-
     @Override
-    @Transactional
     public Assignment create(Assignment assignment) {
-        Order order = orderService.get(assignment.getOrder().getId());
-        assignment.setOrder(order);
-        if (!assignment.getOrder().getStatus().equals(OrderStatus.NOT_SENT)) {
+        Assignment assignmentToCreate = Assignment.builder()
+                .id(assignment.getId())
+                .status(AssignmentStatus.NOT_SENT)
+                .order(assignment.getOrder())
+                .tasks(assignment.getTasks())
+                .userCommentary(assignment.getUserCommentary())
+                .build();
+        Order order = orderService.get(assignmentToCreate.getOrder().getId());
+        assignmentToCreate.setOrder(order);
+        if (!OrderStatus.NOT_SENT.equals(assignmentToCreate.getOrder().getStatus())) {
             throw new IllegalActionException("You can't add assignment to already sent order!");
         }
-        if (assignment.getTasks().isEmpty()) {
+        List<Task> tasks = assignmentToCreate.getTasks();
+        if (tasks == null || tasks.isEmpty()) {
             throw new NotEnoughResourcesException("You can't create assignment without tasks!");
         }
-        assignment.setStatus(AssignmentStatus.NOT_SENT);
-        assignmentDao.create(assignment);
-        assignmentDao.createTasks(assignment);
-        assignment.setTasks(taskService.getTasks(assignment.getId()));
-        return assignment;
+        Specialization probableSpecialization = taskService.get(tasks.get(0).getId()).getSpecialization();
+        for (Task task : tasks) {
+            if (!taskService.get(task.getId()).getSpecialization().equals(probableSpecialization)) {
+                throw new IllegalActionException("You can't create assignment with multiple specializations!");
+            }
+        }
+        assignmentToCreate.setSpecialization(probableSpecialization);
+        assignmentDao.create(assignmentToCreate);
+        assignmentDao.createTasks(assignmentToCreate);
+        assignmentToCreate.setTasks(taskService.getTasks(assignmentToCreate.getId()));
+        return assignmentToCreate;
     }
 
     @Override
@@ -54,12 +67,12 @@ public class AssignmentServiceImpl implements AssignmentService {
     public List<Assignment> sendWithOrder(Long orderId) {
         orderService.send(orderId);
         List<Assignment> assignments = getAllByOrderId(orderId);
-        if (assignments.isEmpty()) {
+        if (assignments == null || assignments.isEmpty()) {
             throw new NotEnoughResourcesException("You cannot send order without assignments!");
         }
         List<Assignment> updatedAssignments = new ArrayList<>();
         assignments.forEach(a -> {
-            if (!a.getStatus().equals(AssignmentStatus.NOT_SENT)) {
+            if (!AssignmentStatus.NOT_SENT.equals(a.getStatus())) {
                 throw new IllegalActionException("You can't send assignment with id = " + a.getId() + ", because it's already sent!");
             }
             int totalDuration = a.getTasks().stream()
@@ -132,11 +145,16 @@ public class AssignmentServiceImpl implements AssignmentService {
     @Transactional
     public Assignment accept(Assignment assignment) {
         Assignment existingAssignment = get(assignment.getId());
-        if (!existingAssignment.getStatus().equals(AssignmentStatus.UNDER_CONSIDERATION)) {
+        if (!AssignmentStatus.UNDER_CONSIDERATION.equals(existingAssignment.getStatus())) {
             throw new IllegalActionException("Assignment with id = " + existingAssignment.getId() + " is not under consideration!");
         }
-        assignment.setStatus(AssignmentStatus.ACCEPTED);
-        return update(assignment);
+        Assignment assignmentToUpdate = Assignment.builder()
+                .id(assignment.getId())
+                .status(AssignmentStatus.ACCEPTED)
+                .finalCost(assignment.getFinalCost())
+                .employeeCommentary(assignment.getEmployeeCommentary())
+                .build();
+        return update(assignmentToUpdate);
     }
 
 }

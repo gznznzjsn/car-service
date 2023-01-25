@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Key;
 import java.util.Date;
@@ -33,11 +34,13 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public String generateAccessToken(UserDetails userDetails) {
         return generateAccessToken(new HashMap<>(), userDetails);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public String generateAccessToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts
                 .builder()
@@ -51,6 +54,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public String generateRefreshToken(UserDetails userDetails) {
         return Jwts
                 .builder()
@@ -62,11 +66,13 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isValidAccessToken(String token) {
         return isValidToken(token, accessKey);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isValidRefreshToken(String token) {
         return isValidToken(token, refreshKey);
     }
@@ -80,6 +86,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public String extractUsernameFromAccessToken(String token) {
         return extractUsername(token, accessKey);
     }
@@ -94,6 +101,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public String extractRefreshSubject(String token) {
         return extractClaim(token, Claims::getSubject, refreshKey);
     }

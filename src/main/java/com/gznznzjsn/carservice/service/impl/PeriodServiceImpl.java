@@ -26,10 +26,7 @@ public class PeriodServiceImpl implements PeriodService {
         } else {
             Period updatedPeriod = Period.builder()
                     .id(period.getId())
-                    .employee(period.getEmployee())
-                    .date(period.getDate())
                     .start(period.getStart() + totalDuration)
-                    .end(period.getEnd())
                     .build();
             update(updatedPeriod);
         }

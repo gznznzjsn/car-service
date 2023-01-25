@@ -27,8 +27,7 @@ public record AssignmentDto(
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         AssignmentStatus status,
 
-        @NotNull(message = "Specialization is mandatory!", groups = {OnCreateAssignment.class})
-        @Schema(example = "CLEANER")
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         Specialization specialization,
 
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)

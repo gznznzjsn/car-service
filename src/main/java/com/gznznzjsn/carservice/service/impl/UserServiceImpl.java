@@ -23,12 +23,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getByEmail(String email) {
         return userDao.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User with email " + email + " not found"));
     }
 
     @Override
+    @Transactional
     public User create(User user) {
         if(userDao.findByEmail(user.getEmail()).isPresent()){
             throw new UniqueResourceException("User with email "+ user.getEmail()+" already exists!");

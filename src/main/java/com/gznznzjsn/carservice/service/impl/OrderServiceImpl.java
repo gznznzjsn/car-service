@@ -48,15 +48,12 @@ public class OrderServiceImpl implements OrderService {
                 .status(OrderStatus.UNDER_CONSIDERATION)
                 .build();
         return update(orderToUpdate);
-
-
     }
 
     @Override
     @Transactional
     public Order update(Order order) {
         Order orderFromRepository = get(order.getId());
-
         if (order.getStatus() != null) {
             orderFromRepository.setStatus(order.getStatus());
         }
@@ -64,7 +61,6 @@ public class OrderServiceImpl implements OrderService {
             orderFromRepository.setArrivalTime(order.getArrivalTime());
         }
         orderDao.update(orderFromRepository);
-
         return orderFromRepository;
     }
 
