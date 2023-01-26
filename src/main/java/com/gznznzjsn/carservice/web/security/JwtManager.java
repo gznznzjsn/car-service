@@ -1,6 +1,5 @@
-package com.gznznzjsn.carservice.service.impl;
+package com.gznznzjsn.carservice.web.security;
 
-import com.gznznzjsn.carservice.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -8,7 +7,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
@@ -16,8 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Service
-public class JwtServiceImpl implements JwtService {
+@Component
+public class JwtManager {
 
     private static Key accessKey;
     private static Key refreshKey;
@@ -32,12 +31,10 @@ public class JwtServiceImpl implements JwtService {
         refreshKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
     }
 
-    @Override
     public String generateAccessToken(UserDetails userDetails) {
         return generateAccessToken(new HashMap<>(), userDetails);
     }
 
-    @Override
     public String generateAccessToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts
                 .builder()
@@ -50,7 +47,6 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
-    @Override
     public String generateRefreshToken(UserDetails userDetails) {
         return Jwts
                 .builder()
@@ -61,12 +57,10 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
-    @Override
     public boolean isValidAccessToken(String token) {
         return isValidToken(token, accessKey);
     }
 
-    @Override
     public boolean isValidRefreshToken(String token) {
         return isValidToken(token, refreshKey);
     }
@@ -79,7 +73,6 @@ public class JwtServiceImpl implements JwtService {
         return false;
     }
 
-    @Override
     public String extractUsernameFromAccessToken(String token) {
         return extractUsername(token, accessKey);
     }
@@ -93,7 +86,6 @@ public class JwtServiceImpl implements JwtService {
         return claimsResolver.apply(claims);
     }
 
-    @Override
     public String extractRefreshSubject(String token) {
         return extractClaim(token, Claims::getSubject, refreshKey);
     }

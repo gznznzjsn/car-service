@@ -4,14 +4,15 @@ import com.gznznzjsn.carservice.domain.user.AuthEntity;
 import com.gznznzjsn.carservice.domain.user.Role;
 import com.gznznzjsn.carservice.domain.user.User;
 import com.gznznzjsn.carservice.service.AuthenticationService;
-import com.gznznzjsn.carservice.service.JwtService;
 import com.gznznzjsn.carservice.service.UserService;
+import com.gznznzjsn.carservice.web.security.JwtManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +20,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final JwtManager jwtManager;
     private final AuthenticationManager authenticationManager;
 
     @Override
+    @Transactional
     public AuthEntity register(AuthEntity authEntity) {
         User user = User.builder()
                 .name(authEntity.getName())
@@ -31,8 +33,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .role(Role.USER)
                 .build();
         userService.create(user);
-        String accessJwt = jwtService.generateAccessToken(user);
-        String refreshJwt = jwtService.generateRefreshToken(user);
+        String accessJwt = jwtManager.generateAccessToken(user);
+        String refreshJwt = jwtManager.generateRefreshToken(user);
         return AuthEntity.builder()
                 .accessToken(accessJwt)
                 .refreshToken(refreshJwt)
@@ -40,6 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AuthEntity authenticate(AuthEntity authEntity) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -48,8 +51,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 )
         );
         User user = userService.getByEmail(authEntity.getEmail());
-        String accessJwt = jwtService.generateAccessToken(user);
-        String refreshJwt = jwtService.generateRefreshToken(user);
+        String accessJwt = jwtManager.generateAccessToken(user);
+        String refreshJwt = jwtManager.generateRefreshToken(user);
         return AuthEntity.builder()
                 .accessToken(accessJwt)
                 .refreshToken(refreshJwt)
@@ -57,15 +60,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AuthEntity refresh(AuthEntity authEntity) {
         String refreshToken = authEntity.getRefreshToken();
-        if (!jwtService.isValidRefreshToken(refreshToken)) {
+        if (!jwtManager.isValidRefreshToken(refreshToken)) {
             throw new AccessDeniedException("Access denied!");
         }
-        String email = jwtService.extractRefreshSubject(refreshToken);
+        String email = jwtManager.extractRefreshSubject(refreshToken);
         User user = userService.getByEmail(email);
-        String accessToken = jwtService.generateAccessToken(user);
-        String newRefreshToken = jwtService.generateRefreshToken(user);
+        String accessToken = jwtManager.generateAccessToken(user);
+        String newRefreshToken = jwtManager.generateRefreshToken(user);
         return AuthEntity.builder()
                 .accessToken(accessToken)
                 .refreshToken(newRefreshToken)

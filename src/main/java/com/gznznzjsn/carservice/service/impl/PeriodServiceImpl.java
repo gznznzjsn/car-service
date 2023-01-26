@@ -26,10 +26,7 @@ public class PeriodServiceImpl implements PeriodService {
         } else {
             Period updatedPeriod = Period.builder()
                     .id(period.getId())
-                    .employee(period.getEmployee())
-                    .date(period.getDate())
                     .start(period.getStart() + totalDuration)
-                    .end(period.getEnd())
                     .build();
             update(updatedPeriod);
         }
@@ -53,7 +50,7 @@ public class PeriodServiceImpl implements PeriodService {
 
     @Override
     @Transactional
-    public void update(Period period) {
+    public Period update(Period period) {
         Period periodFromRepository = get(period.getId());
         if (period.getEmployee() != null) {
             periodFromRepository.setEmployee(period.getEmployee());
@@ -65,6 +62,7 @@ public class PeriodServiceImpl implements PeriodService {
             periodFromRepository.setEnd(period.getEnd());
         }
         periodDao.update(periodFromRepository);
+        return periodFromRepository;
     }
 
     @Override

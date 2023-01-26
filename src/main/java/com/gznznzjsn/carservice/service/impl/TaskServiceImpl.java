@@ -25,6 +25,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Task> getTasks(Long assignmentId) {
         return taskDao.findAllByAssignmentId(assignmentId);
     }
