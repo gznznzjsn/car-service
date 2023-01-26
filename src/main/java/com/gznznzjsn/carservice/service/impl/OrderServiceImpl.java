@@ -22,11 +22,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Order create(Order order) {
+        if (order.getUser() == null) {
+            throw new IllegalActionException("You can't create order without user!");
+        }
         User user = userService.get(order.getUser().getId());
-        order.setUser(user);
-        order.setStatus(OrderStatus.NOT_SENT);
-        orderDao.create(order);
-        return order;
+        Order orderToCreate = Order.builder()
+                .status(OrderStatus.NOT_SENT)
+                .user(user)
+                .arrivalTime(order.getArrivalTime())
+                .build();
+        orderDao.create(orderToCreate);
+        return orderToCreate;
     }
 
     @Override

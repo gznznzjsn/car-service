@@ -25,8 +25,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public Employee create(Employee employee) {
-        employeeDao.create(employee);
-        return employee;
+        Employee employeeToCreate = Employee.builder()
+                .name(employee.getName())
+                .specialization(employee.getSpecialization())
+                .build();
+        employeeDao.create(employeeToCreate);
+        return employeeToCreate;
     }
 
     @Override

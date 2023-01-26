@@ -1,6 +1,6 @@
 package com.gznznzjsn.carservice.web.security.filter;
 
-import com.gznznzjsn.carservice.service.JwtService;
+import com.gznznzjsn.carservice.web.security.JwtManager;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +21,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private final JwtManager jwtManager;
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -37,8 +37,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         String jwt = authorizationHeader.substring(7);
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (jwtService.isValidAccessToken(jwt)) {
-                String email = jwtService.extractUsernameFromAccessToken(jwt);
+            if (jwtManager.isValidAccessToken(jwt)) {
+                String email = jwtManager.extractUsernameFromAccessToken(jwt);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(

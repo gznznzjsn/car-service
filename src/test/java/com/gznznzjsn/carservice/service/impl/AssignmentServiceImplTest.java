@@ -58,7 +58,9 @@ class AssignmentServiceImplTest {
                 .id(1L)
                 .build()).build();
         when(orderService.get(1L)).thenThrow(ResourceNotFoundException.class);
+
         assertThrows(ResourceNotFoundException.class, () -> assignmentService.create(givenAssignment));
+
         verify(assignmentDao, never()).create(any());
         verify(assignmentDao, never()).createTasks(any());
     }
@@ -69,7 +71,9 @@ class AssignmentServiceImplTest {
                 .id(1L)
                 .build()).build();
         when(orderService.get(1L)).thenReturn(Order.builder().status(OrderStatus.UNDER_CONSIDERATION).build());
+
         assertThrows(IllegalActionException.class, () -> assignmentService.create(givenAssignment));
+
         verify(assignmentDao, never()).create(any());
         verify(assignmentDao, never()).createTasks(any());
     }
@@ -80,7 +84,9 @@ class AssignmentServiceImplTest {
                 .id(1L)
                 .build()).build();
         when(orderService.get(1L)).thenReturn(Order.builder().status(OrderStatus.NOT_SENT).build());
+
         assertThrows(NotEnoughResourcesException.class, () -> assignmentService.create(givenAssignment));
+
         verify(assignmentDao, never()).create(any());
         verify(assignmentDao, never()).createTasks(any());
     }
@@ -98,7 +104,9 @@ class AssignmentServiceImplTest {
         when(orderService.get(1L)).thenReturn(Order.builder().status(OrderStatus.NOT_SENT).build());
         when(taskService.get(1L)).thenReturn(Task.builder().specialization(Specialization.CLEANER).build());
         when(taskService.get(2L)).thenReturn(Task.builder().specialization(Specialization.REPAIRER).build());
+
         assertThrows(IllegalActionException.class, () -> assignmentService.create(givenAssignment));
+
         verify(assignmentDao, never()).create(any());
         verify(assignmentDao, never()).createTasks(any());
     }
@@ -134,13 +142,13 @@ class AssignmentServiceImplTest {
         Assignment returnedAssignment = assignmentService.create(givenAssignment);
 
         assertEquals(1L, returnedAssignment.getId());
-        assertEquals(returnedAssignment.getOrder().getId(), givenAssignment.getOrder().getId());
-        assertEquals(returnedAssignment.getSpecialization(), Specialization.CLEANER);
-        assertEquals(returnedAssignment.getTasks().size(), givenAssignment.getTasks().size());
-        assertEquals(returnedAssignment.getTasks().get(0).getId(), givenAssignment.getTasks().get(0).getId());
-        assertEquals(returnedAssignment.getTasks().get(1).getId(), givenAssignment.getTasks().get(1).getId());
-        assertEquals(returnedAssignment.getUserCommentary(), givenAssignment.getUserCommentary());
-        assertEquals(returnedAssignment.getStatus(), AssignmentStatus.NOT_SENT);
+        assertEquals(givenAssignment.getOrder().getId(), returnedAssignment.getOrder().getId());
+        assertEquals(Specialization.CLEANER, returnedAssignment.getSpecialization());
+        assertEquals(givenAssignment.getTasks().size(), returnedAssignment.getTasks().size());
+        assertEquals(givenAssignment.getTasks().get(0).getId(), returnedAssignment.getTasks().get(0).getId());
+        assertEquals(givenAssignment.getTasks().get(1).getId(), returnedAssignment.getTasks().get(1).getId());
+        assertEquals(givenAssignment.getUserCommentary(), returnedAssignment.getUserCommentary());
+        assertEquals(AssignmentStatus.NOT_SENT, returnedAssignment.getStatus());
         assertNull(returnedAssignment.getStartTime());
         assertNull(returnedAssignment.getFinalCost());
         assertNull(returnedAssignment.getEmployee());
@@ -151,7 +159,9 @@ class AssignmentServiceImplTest {
     void sendWithNonExistingOrder() {
         AssignmentService spyAS = spy(assignmentService);
         when(orderService.send(1L)).thenThrow(ResourceNotFoundException.class);
+
         assertThrows(ResourceNotFoundException.class, () -> spyAS.sendWithOrder(1L));
+
         verifyNoInteractions(periodService);
         verify(spyAS, never()).update(any());
     }
@@ -159,7 +169,9 @@ class AssignmentServiceImplTest {
     @Test
     void sendWithEmptyOrder() {
         AssignmentService spyAS = spy(assignmentService);
+
         assertThrows(NotEnoughResourcesException.class, () -> spyAS.sendWithOrder(1L));
+
         verifyNoInteractions(periodService);
         verify(spyAS, never()).update(any());
     }
@@ -168,7 +180,9 @@ class AssignmentServiceImplTest {
     void sendWithSentOrder() {
         AssignmentService spyAS = spy(assignmentService);
         when(orderService.send(1L)).thenThrow(IllegalActionException.class);
+
         assertThrows(IllegalActionException.class, () -> spyAS.sendWithOrder(1L));
+
         verifyNoInteractions(periodService);
         verify(spyAS, never()).update(any());
     }
@@ -182,7 +196,9 @@ class AssignmentServiceImplTest {
                         .tasks(List.of(new Task()))
                         .build()
         )).when(assignmentDao).findAllByOrderId(1L);
+
         assertThrows(IllegalActionException.class, () -> assignmentService.sendWithOrder(1L));
+
         verifyNoInteractions(periodService);
         verify(spyAS, never()).update(any());
     }
@@ -202,7 +218,9 @@ class AssignmentServiceImplTest {
                 assignment
         )).when(spyAS).getAllByOrderId(1L);
         when(periodService.eraseAppropriate(null, null, 2 + 4)).thenThrow(new ResourceNotFoundException(""));
+
         assertThrows(ResourceNotFoundException.class, () -> spyAS.sendWithOrder(1L));
+
         verify(spyAS, never()).update(any());
     }
 
@@ -245,7 +263,6 @@ class AssignmentServiceImplTest {
                 )
                 .startTime(date2.atTime(2, 0))
                 .build();
-
         doReturn(List.of(
                 assignment1,
                 assignment2
@@ -270,8 +287,8 @@ class AssignmentServiceImplTest {
         verify(spyAS, times(2)).update(any());
         verify(periodService).eraseAppropriate(null, null, 2 + 4);
         verify(periodService).eraseAppropriate(null, null, 3 + 5);
-        assertEquals(updatedAssignments.get(0), updated1);
-        assertEquals(updatedAssignments.get(1), updated2);
+        assertEquals(updated1, updatedAssignments.get(0));
+        assertEquals(updated2, updatedAssignments.get(1));
     }
 
     @Test
@@ -320,6 +337,7 @@ class AssignmentServiceImplTest {
     void updateNonExisting() {
         AssignmentService spyAS = spy(assignmentService);
         Assignment givenAssignment = Assignment.builder().id(1L).build();
+
         doThrow(ResourceNotFoundException.class).when(spyAS).get(1L);
 
         assertThrows(ResourceNotFoundException.class, () -> spyAS.update(givenAssignment));
@@ -362,7 +380,6 @@ class AssignmentServiceImplTest {
         verify(taskService).getTasks(1L);
         assertEquals(assignment.getId(), returnedAssignment.getId());
         assertEquals(assignment, returnedAssignment);
-
     }
 
     @Test
@@ -430,14 +447,12 @@ class AssignmentServiceImplTest {
         when(taskService.getTasks(5L)).thenReturn(List.of(Task.builder().id(1L).build(), Task.builder().id(2L).build(), Task.builder().id(3L).build()));
 
         List<Assignment> assignmentList = assignmentService.getAllByOrderId(1L);
+
         verify(assignmentDao).findAllByOrderId(1L);
         verify(taskService, times(2)).getTasks(anyLong());
-
         assertEquals(assignment1, assignmentList.get(0));
         assertEquals(assignment2, assignmentList.get(1));
-
         assertEquals(assignmentList.size(), 2);
-
     }
 
     @Test

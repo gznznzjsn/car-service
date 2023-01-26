@@ -32,7 +32,9 @@ class PeriodServiceImplTest {
     @Test
     void eraseAppropriateNonExisting() {
         when(periodDao.findBy(LocalDateTime.MAX, Specialization.CLEANER, 3)).thenReturn(Optional.empty());
+
         assertThrows(ResourceNotFoundException.class, () -> periodService.eraseAppropriate(LocalDateTime.MAX, Specialization.CLEANER, 3));
+
         verify(periodDao).findBy(LocalDateTime.MAX, Specialization.CLEANER, 3);
         verify(periodDao, never()).delete(anyLong());
         verify(periodDao, never()).update(any());
@@ -93,7 +95,9 @@ class PeriodServiceImplTest {
     @Test
     void getNonExistingBy() {
         when(periodDao.findBy(LocalDateTime.MAX, Specialization.CLEANER, 3)).thenReturn(Optional.empty());
+
         assertThrows(ResourceNotFoundException.class, () -> periodService.getBy(LocalDateTime.MAX, Specialization.CLEANER, 3));
+
         verify(periodDao).findBy(LocalDateTime.MAX, Specialization.CLEANER, 3);
     }
 
@@ -111,7 +115,9 @@ class PeriodServiceImplTest {
                         .build())
                 .build();
         when(periodDao.findBy(LocalDateTime.MAX, Specialization.CLEANER, 3)).thenReturn(Optional.of(period));
+
         Period returnedPeriod = periodService.getBy(LocalDateTime.MAX, Specialization.CLEANER, 3);
+
         assertEquals(period, returnedPeriod);
         verify(periodDao).findBy(LocalDateTime.MAX, Specialization.CLEANER, 3);
     }
@@ -119,6 +125,7 @@ class PeriodServiceImplTest {
     @Test
     void delete() {
         periodService.delete(1L);
+
         verify(periodDao).delete(1L);
     }
 
@@ -136,7 +143,6 @@ class PeriodServiceImplTest {
                         .name("employeeName")
                         .build())
                 .build();
-
         doReturn(Period.builder().id(1L).build()).when(spyPS).get(1L);
 
         Period returnedPeriod = spyPS.update(givenPeriod);
@@ -168,6 +174,7 @@ class PeriodServiceImplTest {
         doThrow(ResourceNotFoundException.class).when(spyPS).get(1L);
 
         assertThrows(ResourceNotFoundException.class, () -> spyPS.update(givenPeriod));
+
         verify(spyPS).get(1L);
         verify(periodDao, never()).update(any());
     }

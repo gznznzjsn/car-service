@@ -71,12 +71,11 @@ class TaskServiceImplTest {
         when(taskDao.findAllByAssignmentId(1L)).thenReturn(List.of(task1, task2));
 
         List<Task> taskList = taskService.getTasks(1L);
-        verify(taskDao).findAllByAssignmentId(1L);
 
+        verify(taskDao).findAllByAssignmentId(1L);
         assertEquals(task1, taskList.get(0));
         assertEquals(task2, taskList.get(1));
-
-        assertEquals(taskList.size(), 2);
+        assertEquals(2, taskList.size());
     }
 
     @Test
@@ -84,8 +83,8 @@ class TaskServiceImplTest {
         when(taskDao.findAllByAssignmentId(1L)).thenReturn(new ArrayList<>());
 
         List<Task> taskList = taskService.getTasks(1L);
-        verify(taskDao).findAllByAssignmentId(1L);
 
-        assertEquals(taskList.size(), 0);
+        verify(taskDao).findAllByAssignmentId(1L);
+        assertEquals(0, taskList.size());
     }
 }

@@ -31,6 +31,7 @@ class UserServiceImplTest {
         when(userDao.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> userService.get(1L));
+
         verify(userDao).findById(anyLong());
     }
 
@@ -56,6 +57,7 @@ class UserServiceImplTest {
         when(userDao.findByEmail("e@mail.com")).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> userService.getByEmail("e@mail.com"));
+
         verify(userDao).findByEmail(anyString());
     }
 
@@ -79,7 +81,6 @@ class UserServiceImplTest {
     @Test
     void createAlreadyCreated() {
         User userWithTakenEmail = User.builder().email("e@mail.com").build();
-
         when(userDao.findByEmail("e@mail.com")).thenReturn(Optional.of(new User()));
 
         assertThrows(UniqueResourceException.class, () -> userService.create(userWithTakenEmail));
@@ -103,6 +104,7 @@ class UserServiceImplTest {
         }).when(userDao).create(user);
 
         userService.create(user);
+
         assertEquals(1L, user.getId());
         verify(userDao).findByEmail("e@mail.com");
         verify(userDao).create(user);
