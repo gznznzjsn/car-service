@@ -12,6 +12,8 @@ import com.gznznzjsn.carservice.domain.exception.NotEnoughResourcesException;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
 import com.gznznzjsn.carservice.domain.order.Order;
 import com.gznznzjsn.carservice.domain.order.OrderStatus;
+import com.gznznzjsn.carservice.domain.user.Role;
+import com.gznznzjsn.carservice.domain.user.User;
 import com.gznznzjsn.carservice.service.AssignmentService;
 import com.gznznzjsn.carservice.service.OrderService;
 import com.gznznzjsn.carservice.service.PeriodService;
@@ -104,7 +106,6 @@ class AssignmentServiceImplTest {
     @Test
     void createCorrect() {
         Assignment givenAssignment = Assignment.builder()
-                .id(1L)
                 .status(AssignmentStatus.ACCEPTED)
                 .order(Order.builder().id(1L).build())
                 .startTime(LocalDateTime.MAX)
@@ -118,6 +119,11 @@ class AssignmentServiceImplTest {
                 ))
                 .build();
         when(orderService.get(1L)).thenReturn(Order.builder().id(1L).status(OrderStatus.NOT_SENT).build());
+        doAnswer(invocation -> {
+            Assignment a = invocation.getArgument(0);
+            a.setId(1L);
+            return null;
+        }).when(assignmentDao).create(any());
         when(taskService.get(1L)).thenReturn(Task.builder().specialization(Specialization.CLEANER).build());
         when(taskService.get(2L)).thenReturn(Task.builder().specialization(Specialization.CLEANER).build());
         when(taskService.getTasks(1L)).thenReturn(List.of(
@@ -127,7 +133,7 @@ class AssignmentServiceImplTest {
 
         Assignment returnedAssignment = assignmentService.create(givenAssignment);
 
-        assertEquals(returnedAssignment.getId(), givenAssignment.getId());
+        assertEquals(1L, returnedAssignment.getId());
         assertEquals(returnedAssignment.getOrder().getId(), givenAssignment.getOrder().getId());
         assertEquals(returnedAssignment.getSpecialization(), Specialization.CLEANER);
         assertEquals(returnedAssignment.getTasks().size(), givenAssignment.getTasks().size());
@@ -262,8 +268,8 @@ class AssignmentServiceImplTest {
         List<Assignment> updatedAssignments = spyAS.sendWithOrder(1L);
 
         verify(spyAS, times(2)).update(any());
-        verify(periodService).eraseAppropriate(null, null, 2+4);
-        verify(periodService).eraseAppropriate(null, null, 3+5);
+        verify(periodService).eraseAppropriate(null, null, 2 + 4);
+        verify(periodService).eraseAppropriate(null, null, 3 + 5);
         assertEquals(updatedAssignments.get(0), updated1);
         assertEquals(updatedAssignments.get(1), updated2);
     }
@@ -286,12 +292,7 @@ class AssignmentServiceImplTest {
                         Task.builder().id(5L).build()
                 ))
                 .build();
-        doReturn(new Assignment()).when(spyAS).get(1L);
-        doAnswer(invocation -> {
-            Assignment assignment = invocation.getArgument(0);
-            assignment.setId(1L);
-            return assignment;
-        }).when(assignmentDao).update(any());
+        doReturn(Assignment.builder().id(1L).build()).when(spyAS).get(1L);
 
         Assignment returnedAssignment = spyAS.update(givenAssignment);
 
@@ -306,12 +307,11 @@ class AssignmentServiceImplTest {
     void updateNothing() {
         AssignmentService spyAS = spy(assignmentService);
         Assignment givenAssignment = Assignment.builder().id(1L).build();
-        doReturn(new Assignment()).when(spyAS).get(1L);
-        doAnswer(invocation -> invocation.<Assignment>getArgument(0)).when(assignmentDao).update(any());
+        doReturn(Assignment.builder().id(1L).build()).when(spyAS).get(1L);
 
         Assignment returnedAssignment = spyAS.update(givenAssignment);
 
-        assertEquals(new Assignment(), returnedAssignment);
+        assertEquals(givenAssignment, returnedAssignment);
         verify(spyAS).get(1L);
         verify(assignmentDao).update(any());
     }
@@ -331,16 +331,37 @@ class AssignmentServiceImplTest {
     void getExisting() {
         Assignment assignment = Assignment.builder()
                 .id(1L)
+                .status(AssignmentStatus.DONE)
+                .order(Order.builder()
+                        .id(1L)
+                        .user(User.builder()
+                                .id(1L)
+                                .password("pass")
+                                .role(Role.USER)
+                                .name("userName")
+                                .email("e@mail.com")
+                                .build())
+                        .status(OrderStatus.DONE)
+                        .arrivalTime(LocalDateTime.MAX)
+                        .createdAt(LocalDateTime.MAX)
+                        .finishedAt(LocalDateTime.MAX)
+                        .build())
+                .tasks(List.of(Task.builder().id(1L).build(), Task.builder().id(2L).build(), Task.builder().id(3L).build()))
+                .userCommentary("blah blah")
+                .finalCost(BigDecimal.valueOf(123))
+                .startTime(LocalDateTime.MAX)
+                .employeeCommentary("blah blah")
+                .employee(Employee.builder().id(1L).build())
                 .build();
         when(assignmentDao.findById(1L)).thenReturn(Optional.of(assignment));
-        when(taskService.getTasks(1L)).thenReturn(List.of(new Task(), new Task(), new Task()));
+        when(taskService.getTasks(1L)).thenReturn(List.of(Task.builder().id(1L).build(), Task.builder().id(2L).build(), Task.builder().id(3L).build()));
 
         Assignment returnedAssignment = assignmentService.get(1L);
 
         verify(assignmentDao).findById(1L);
         verify(taskService).getTasks(1L);
         assertEquals(assignment.getId(), returnedAssignment.getId());
-        assertEquals(3, returnedAssignment.getTasks().size());
+        assertEquals(assignment, returnedAssignment);
 
     }
 
@@ -356,11 +377,57 @@ class AssignmentServiceImplTest {
 
     @Test
     void getAllByOrderIdAtLeastOne() {
-        Assignment assignment1 = Assignment.builder().id(4L).build();
-        Assignment assignment2 = Assignment.builder().id(5L).build();
+        Assignment assignment1 = Assignment.builder()
+                .id(4L)
+                .status(AssignmentStatus.DONE)
+                .order(Order.builder()
+                        .id(1L)
+                        .user(User.builder()
+                                .id(1L)
+                                .password("pass")
+                                .role(Role.USER)
+                                .name("userName")
+                                .email("e@mail.com")
+                                .build())
+                        .status(OrderStatus.DONE)
+                        .arrivalTime(LocalDateTime.MAX)
+                        .createdAt(LocalDateTime.MAX)
+                        .finishedAt(LocalDateTime.MAX)
+                        .build())
+                .tasks(List.of(Task.builder().id(1L).build(), Task.builder().id(2L).build(), Task.builder().id(3L).build()))
+                .userCommentary("blah blah")
+                .finalCost(BigDecimal.valueOf(123))
+                .startTime(LocalDateTime.MAX)
+                .employeeCommentary("blah blah")
+                .employee(Employee.builder().id(1L).build())
+                .build();
+        Assignment assignment2 = Assignment.builder()
+                .id(5L)
+                .status(AssignmentStatus.DONE)
+                .order(Order.builder()
+                        .id(1L)
+                        .user(User.builder()
+                                .id(1L)
+                                .password("pass")
+                                .role(Role.USER)
+                                .name("userName")
+                                .email("e@mail.com")
+                                .build())
+                        .status(OrderStatus.DONE)
+                        .arrivalTime(LocalDateTime.MAX)
+                        .createdAt(LocalDateTime.MAX)
+                        .finishedAt(LocalDateTime.MAX)
+                        .build())
+                .tasks(List.of(Task.builder().id(1L).build(), Task.builder().id(2L).build(), Task.builder().id(3L).build()))
+                .userCommentary("blah blah")
+                .finalCost(BigDecimal.valueOf(123))
+                .startTime(LocalDateTime.MAX)
+                .employeeCommentary("blah blah")
+                .employee(Employee.builder().id(1L).build())
+                .build();
         when(assignmentDao.findAllByOrderId(1L)).thenReturn(List.of(assignment1, assignment2));
-        when(taskService.getTasks(4L)).thenReturn(List.of(new Task(), new Task(), new Task()));
-        when(taskService.getTasks(5L)).thenReturn(List.of(new Task(), new Task(), new Task()));
+        when(taskService.getTasks(4L)).thenReturn(List.of(Task.builder().id(1L).build(), Task.builder().id(2L).build(), Task.builder().id(3L).build()));
+        when(taskService.getTasks(5L)).thenReturn(List.of(Task.builder().id(1L).build(), Task.builder().id(2L).build(), Task.builder().id(3L).build()));
 
         List<Assignment> assignmentList = assignmentService.getAllByOrderId(1L);
         verify(assignmentDao).findAllByOrderId(1L);
@@ -368,12 +435,6 @@ class AssignmentServiceImplTest {
 
         assertEquals(assignment1, assignmentList.get(0));
         assertEquals(assignment2, assignmentList.get(1));
-
-        assertEquals(assignmentList.get(0).getTasks().size(), 3);
-        assertEquals(assignmentList.get(1).getTasks().size(), 3);
-
-        assertEquals(assignmentList.get(0).getId(), 4L);
-        assertEquals(assignmentList.get(1).getId(), 5L);
 
         assertEquals(assignmentList.size(), 2);
 

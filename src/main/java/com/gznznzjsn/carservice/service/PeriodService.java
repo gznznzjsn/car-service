@@ -14,7 +14,7 @@ public interface PeriodService {
 
     void delete(Long periodId);
 
-    void update(Period period);
+    Period update(Period period);
 
     Period get(Long periodId);
 

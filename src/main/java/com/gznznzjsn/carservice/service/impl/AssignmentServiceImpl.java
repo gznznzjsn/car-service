@@ -32,6 +32,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final TaskService taskService;
 
     @Override
+    @Transactional
     public Assignment create(Assignment assignment) {
         Assignment assignmentToCreate = Assignment.builder()
                 .id(assignment.getId())
