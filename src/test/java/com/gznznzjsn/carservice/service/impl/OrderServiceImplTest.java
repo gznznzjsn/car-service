@@ -25,16 +25,16 @@ import static org.mockito.Mockito.*;
 class OrderServiceImplTest {
 
     @Mock
-    OrderDao orderDao;
+    private OrderDao orderDao;
 
     @Mock
-    UserServiceImpl userService;
+    private UserServiceImpl userService;
 
     @InjectMocks
-    OrderServiceImpl orderService;
+    private OrderServiceImpl orderService;
 
     @Test
-    void createWithoutUser() {
+    public void createWithoutUser() {
         Order givenOrder = Order.builder()
                 .user(null)
                 .build();
@@ -45,7 +45,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void createWithIncorrectUser() {
+    public void createWithIncorrectUser() {
         Order givenOrder = Order.builder()
                 .user(User.builder()
                         .id(1L)
@@ -59,7 +59,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void createCorrect() {
+    public void createCorrect() {
         Order givenOrder = Order.builder()
                 .user(User.builder()
                         .id(1L)
@@ -93,7 +93,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void getNonExisting() {
+    public void getNonExisting() {
         when(orderDao.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> orderService.get(1L));
@@ -102,7 +102,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void getExisting() {
+    public void getExisting() {
         Order order = Order.builder()
                 .id(1L)
                 .user(User.builder()
@@ -126,7 +126,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void sendNonExisting() {
+    public void sendNonExisting() {
         OrderService spyOS = spy(orderService);
         doThrow(ResourceNotFoundException.class).when(spyOS).get(1L);
 
@@ -137,7 +137,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void sendAlreadySent() {
+    public void sendAlreadySent() {
         OrderService spyOS = spy(orderService);
         doReturn(Order.builder().status(OrderStatus.UNDER_CONSIDERATION).build()).when(spyOS).get(1L);
 
@@ -148,7 +148,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void sendCorrect() {
+    public void sendCorrect() {
         OrderService spyOS = spy(orderService);
         Order order = Order.builder()
                 .id(1L)
@@ -180,7 +180,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void updateNonExisting() {
+    public void updateNonExisting() {
         Order order = Order.builder().id(1L).build();
         OrderService spyOS = spy(orderService);
         doThrow(ResourceNotFoundException.class).when(spyOS).get(1L);
@@ -192,7 +192,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void updateFull() {
+    public void updateFull() {
         Order order = Order.builder()
                 .id(1L)
                 .user(User.builder()
@@ -223,7 +223,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void updateNone() {
+    public void updateNone() {
         Order order = Order.builder()
                 .id(1L)
                 .user(User.builder()

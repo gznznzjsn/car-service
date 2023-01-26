@@ -22,13 +22,13 @@ import static org.mockito.Mockito.*;
 class EmployeeServiceImplTest {
 
     @Mock
-    EmployeeDao employeeDao;
+    private EmployeeDao employeeDao;
 
     @InjectMocks
-    EmployeeServiceImpl employeeService;
+    private EmployeeServiceImpl employeeService;
 
     @Test
-    void getAllAtLeastOne() {
+    public void getAllAtLeastOne() {
         Employee employee1 = Employee.builder()
                 .id(1L)
                 .name("employeeName1")
@@ -49,7 +49,7 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void getAllNone() {
+    public void getAllNone() {
         when(employeeDao.findAll()).thenReturn(new ArrayList<>());
 
         List<Employee> employeeList = employeeService.getAll();
@@ -58,7 +58,7 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void create() {
+    public void create() {
         Employee employee = Employee.builder()
                 .id(1L)
                 .name("employeeName")
@@ -81,7 +81,7 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void getNonExisting() {
+    public void getNonExisting() {
         when(employeeDao.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> employeeService.get(1L));
@@ -90,7 +90,7 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void getExisting() {
+    public void getExisting() {
         Employee employee = Employee.builder()
                 .id(1L)
                 .name("employeeName")
@@ -105,7 +105,7 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void delete() {
+    public void delete() {
         employeeService.delete(1L);
 
         verify(employeeDao).delete(1L);

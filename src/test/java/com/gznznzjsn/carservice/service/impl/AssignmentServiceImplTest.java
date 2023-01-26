@@ -38,22 +38,22 @@ import static org.mockito.Mockito.*;
 class AssignmentServiceImplTest {
 
     @InjectMocks
-    AssignmentServiceImpl assignmentService;
+    private AssignmentServiceImpl assignmentService;
 
     @Mock
-    AssignmentDao assignmentDao;
+    private AssignmentDao assignmentDao;
 
     @Mock
-    OrderService orderService;
+    private OrderService orderService;
 
     @Mock
-    PeriodService periodService;
+    private PeriodService periodService;
 
     @Mock
-    TaskService taskService;
+    private TaskService taskService;
 
     @Test
-    void createForNonExistingOrder() {
+    public void createForNonExistingOrder() {
         Assignment givenAssignment = Assignment.builder().order(Order.builder()
                 .id(1L)
                 .build()).build();
@@ -66,7 +66,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void createForSentOrder() {
+    public void createForSentOrder() {
         Assignment givenAssignment = Assignment.builder().order(Order.builder()
                 .id(1L)
                 .build()).build();
@@ -79,7 +79,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void createWithNoTasks() {
+    public void createWithNoTasks() {
         Assignment givenAssignment = Assignment.builder().order(Order.builder()
                 .id(1L)
                 .build()).build();
@@ -92,7 +92,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void createWithDifferentSpecializationsTasks() {
+    public void createWithDifferentSpecializationsTasks() {
         Assignment givenAssignment = Assignment.builder().order(Order.builder()
                         .id(1L)
                         .build())
@@ -112,7 +112,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void createCorrect() {
+    public void createCorrect() {
         Assignment givenAssignment = Assignment.builder()
                 .status(AssignmentStatus.ACCEPTED)
                 .order(Order.builder().id(1L).build())
@@ -156,7 +156,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void sendWithNonExistingOrder() {
+    public void sendWithNonExistingOrder() {
         AssignmentService spyAS = spy(assignmentService);
         when(orderService.send(1L)).thenThrow(ResourceNotFoundException.class);
 
@@ -167,7 +167,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void sendWithEmptyOrder() {
+    public void sendWithEmptyOrder() {
         AssignmentService spyAS = spy(assignmentService);
 
         assertThrows(NotEnoughResourcesException.class, () -> spyAS.sendWithOrder(1L));
@@ -177,7 +177,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void sendWithSentOrder() {
+    public void sendWithSentOrder() {
         AssignmentService spyAS = spy(assignmentService);
         when(orderService.send(1L)).thenThrow(IllegalActionException.class);
 
@@ -188,7 +188,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void sendWithSentAssignment() {
+    public void sendWithSentAssignment() {
         AssignmentService spyAS = spy(assignmentService);
         doReturn(List.of(
                 Assignment.builder()
@@ -204,7 +204,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void sendWithNoTimeAssignment() {
+    public void sendWithNoTimeAssignment() {
         AssignmentService spyAS = spy(assignmentService);
         Assignment assignment = Assignment.builder()
                 .order(new Order())
@@ -225,7 +225,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void sendWithCorrectAssignments() {
+    public void sendWithCorrectAssignments() {
         AssignmentService spyAS = spy(assignmentService);
         Assignment assignment1 = Assignment.builder()
                 .id(14L)
@@ -292,7 +292,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void updateFull() {
+    public void updateFull() {
         AssignmentService spyAS = spy(assignmentService);
         Assignment givenAssignment = Assignment.builder()
                 .id(1L)
@@ -321,7 +321,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void updateNothing() {
+    public void updateNothing() {
         AssignmentService spyAS = spy(assignmentService);
         Assignment givenAssignment = Assignment.builder().id(1L).build();
         doReturn(Assignment.builder().id(1L).build()).when(spyAS).get(1L);
@@ -334,7 +334,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void updateNonExisting() {
+    public void updateNonExisting() {
         AssignmentService spyAS = spy(assignmentService);
         Assignment givenAssignment = Assignment.builder().id(1L).build();
 
@@ -346,7 +346,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void getExisting() {
+    public void getExisting() {
         Assignment assignment = Assignment.builder()
                 .id(1L)
                 .status(AssignmentStatus.DONE)
@@ -383,7 +383,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void getNonExisting() {
+    public void getNonExisting() {
         when(assignmentDao.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> assignmentService.get(1L));
@@ -393,7 +393,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void getAllByOrderIdAtLeastOne() {
+    public void getAllByOrderIdAtLeastOne() {
         Assignment assignment1 = Assignment.builder()
                 .id(4L)
                 .status(AssignmentStatus.DONE)
@@ -456,7 +456,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void getAllByOrderIdNone() {
+    public void getAllByOrderIdNone() {
         when(assignmentDao.findAllByOrderId(1L)).thenReturn(new ArrayList<>());
 
         List<Assignment> assignmentList = assignmentService.getAllByOrderId(1L);
@@ -467,7 +467,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void acceptAccepted() {
+    public void acceptAccepted() {
         AssignmentService spyAS = spy(assignmentService);
         Assignment givenAssignment = Assignment.builder().id(1L).build();
         Assignment acceptedAssignment = Assignment.builder().status(AssignmentStatus.ACCEPTED).build();
@@ -480,7 +480,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void acceptNotAccepted() {
+    public void acceptNotAccepted() {
         AssignmentService spyAS = spy(assignmentService);
         Assignment givenAssignment = Assignment.builder()
                 .id(1L)
@@ -506,7 +506,7 @@ class AssignmentServiceImplTest {
     }
 
     @Test
-    void acceptNonExisting() {
+    public void acceptNonExisting() {
         AssignmentService spyAS = spy(assignmentService);
         Assignment givenAssignment = Assignment.builder()
                 .id(1L)

@@ -21,13 +21,13 @@ import static org.mockito.Mockito.*;
 class UserServiceImplTest {
 
     @Mock
-    UserDao userDao;
+    private UserDao userDao;
 
     @InjectMocks
-    UserServiceImpl userService;
+    private UserServiceImpl userService;
 
     @Test
-    void getNonExisting() {
+    public void getNonExisting() {
         when(userDao.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> userService.get(1L));
@@ -36,7 +36,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getExisting() {
+    public void getExisting() {
         User user = User.builder()
                 .id(1L)
                 .email("e@mail.com")
@@ -53,7 +53,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getByEmailNonExisting() {
+    public void getByEmailNonExisting() {
         when(userDao.findByEmail("e@mail.com")).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> userService.getByEmail("e@mail.com"));
@@ -62,7 +62,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getByEmailExisting() {
+    public void getByEmailExisting() {
         User user = User.builder()
                 .id(1L)
                 .email("e@mail.com")
@@ -79,7 +79,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void createAlreadyCreated() {
+    public void createAlreadyCreated() {
         User userWithTakenEmail = User.builder().email("e@mail.com").build();
         when(userDao.findByEmail("e@mail.com")).thenReturn(Optional.of(new User()));
 
@@ -90,7 +90,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void createCorrect() {
+    public void createCorrect() {
         User user = User.builder()
                 .email("e@mail.com")
                 .name("userName")

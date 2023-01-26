@@ -24,13 +24,13 @@ import static org.mockito.Mockito.*;
 class PeriodServiceImplTest {
 
     @Mock
-    PeriodDao periodDao;
+    private PeriodDao periodDao;
 
     @InjectMocks
-    PeriodServiceImpl periodService;
+    private PeriodServiceImpl periodService;
 
     @Test
-    void eraseAppropriateNonExisting() {
+    public void eraseAppropriateNonExisting() {
         when(periodDao.findBy(LocalDateTime.MAX, Specialization.CLEANER, 3)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> periodService.eraseAppropriate(LocalDateTime.MAX, Specialization.CLEANER, 3));
@@ -41,7 +41,7 @@ class PeriodServiceImplTest {
     }
 
     @Test
-    void eraseAppropriateFully() {
+    public void eraseAppropriateFully() {
         Period period = Period.builder()
                 .id(1L)
                 .start(1)
@@ -64,7 +64,7 @@ class PeriodServiceImplTest {
     }
 
     @Test
-    void eraseAppropriatePartly() {
+    public void eraseAppropriatePartly() {
         PeriodService spyPS = spy(periodService);
         Period period = Period.builder()
                 .id(1L)
@@ -93,7 +93,7 @@ class PeriodServiceImplTest {
     }
 
     @Test
-    void getNonExistingBy() {
+    public void getNonExistingBy() {
         when(periodDao.findBy(LocalDateTime.MAX, Specialization.CLEANER, 3)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> periodService.getBy(LocalDateTime.MAX, Specialization.CLEANER, 3));
@@ -102,7 +102,7 @@ class PeriodServiceImplTest {
     }
 
     @Test
-    void getExistingBy() {
+    public void getExistingBy() {
         Period period = Period.builder()
                 .id(1L)
                 .start(1)
@@ -123,14 +123,14 @@ class PeriodServiceImplTest {
     }
 
     @Test
-    void delete() {
+    public void delete() {
         periodService.delete(1L);
 
         verify(periodDao).delete(1L);
     }
 
     @Test
-    void updateFull() {
+    public void updateFull() {
         PeriodService spyPS = spy(periodService);
         Period givenPeriod = Period.builder()
                 .id(1L)
@@ -155,7 +155,7 @@ class PeriodServiceImplTest {
     }
 
     @Test
-    void updateNothing() {
+    public void updateNothing() {
         PeriodService spyPS = spy(periodService);
         Period givenPeriod = Period.builder().id(1L).build();
         doReturn(Period.builder().id(1L).build()).when(spyPS).get(1L);
@@ -168,7 +168,7 @@ class PeriodServiceImplTest {
     }
 
     @Test
-    void updateNonExisting() {
+    public void updateNonExisting() {
         PeriodService spyPS = spy(periodService);
         Period givenPeriod = Period.builder().id(1L).build();
         doThrow(ResourceNotFoundException.class).when(spyPS).get(1L);
@@ -180,7 +180,7 @@ class PeriodServiceImplTest {
     }
 
     @Test
-    void getNonExisting() {
+    public void getNonExisting() {
         when(periodDao.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> periodService.get(1L));
@@ -189,7 +189,7 @@ class PeriodServiceImplTest {
     }
 
     @Test
-    void getExisting() {
+    public void getExisting() {
         Period period = Period.builder()
                 .id(1L)
                 .start(1)

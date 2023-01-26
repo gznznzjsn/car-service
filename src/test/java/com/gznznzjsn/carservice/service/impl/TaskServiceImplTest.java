@@ -24,13 +24,13 @@ import static org.mockito.Mockito.when;
 class TaskServiceImplTest {
 
     @Mock
-    TaskDao taskDao;
+    private TaskDao taskDao;
 
     @InjectMocks
-    TaskServiceImpl taskService;
+    private TaskServiceImpl taskService;
 
     @Test
-    void getNonExisting() {
+    public void getNonExisting() {
         when(taskDao.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> taskService.get(1L));
@@ -39,7 +39,7 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void getExisting() {
+    public void getExisting() {
         Task task = Task.builder()
                 .id(1L)
                 .name("taskName")
@@ -56,7 +56,7 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void getAllByOrderIdAtLeastOne() {
+    public void getAllByOrderIdAtLeastOne() {
         Task task1 = Task.builder().id(4L)
                 .name("taskName4")
                 .duration(4)
@@ -79,7 +79,7 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void getAllByOrderIdNone() {
+    public void getAllByOrderIdNone() {
         when(taskDao.findAllByAssignmentId(1L)).thenReturn(new ArrayList<>());
 
         List<Task> taskList = taskService.getTasks(1L);
