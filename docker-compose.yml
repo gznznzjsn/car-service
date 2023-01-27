@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  car-service:
+    build: .
+    ports:
+      - '8000:8080'
+    container_name: car-service
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/car_service
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1q2w3e
+      - SPRING_LIQUIBASE_DEFAULT-SCHEMA=public
+
+  db:
+    image: 'postgres:14.6-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1q2w3e
+      - POSTGRES_DB=car_service
