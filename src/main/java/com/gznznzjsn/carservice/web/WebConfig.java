@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 )
 @OpenAPIDefinition(
         info = @Info(title = "Car Service API", version = "1.0"),
-        servers = @Server(url = "http://localhost:8080", description = "Local server"),
+        servers = {@Server(url = "http://localhost:8080", description = "Local server"), @Server(url = "http://localhost:8081", description = "Docker server")},
         tags = {
                 @Tag(name = "Authentication", description = "Registration, authentication and token management"),
                 @Tag(name = "Orders", description = "Order management, you must be authenticated"),

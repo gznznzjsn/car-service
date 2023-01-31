@@ -1,23 +1,32 @@
 version: '3'
 
 services:
+  db:
+    image: 'postgres:15.1-alpine3.17'
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    container_name: db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DATABASE}
+
   car-service:
+    env_file:
+      - .env
     build: .
     ports:
-      - '8000:8080'
+      - '8081:8080'
     container_name: car-service
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/car_service
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=1q2w3e
-      - SPRING_LIQUIBASE_DEFAULT-SCHEMA=public
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:${POSTGRES_PORT}/${POSTGRES_DATABASE}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
 
-  db:
-    image: 'postgres:14.6-alpine'
-    container_name: db
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=1q2w3e
-      - POSTGRES_DB=car_service
+volumes:
+  postgres-data:
+    driver: local

@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/car_service?currentSchema=my_schema
-    username: postgres
-    password: 1q2w3e
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?currentSchema=${POSTGRES_SCHEMA}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
 
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
-    default-schema: my_schema
+    default-schema: ${POSTGRES_SCHEMA}
 
 mybatis:
   config-location: classpath:db/mybatis/mybatis-config.xml
@@ -21,5 +21,5 @@ springdoc:
 
 car-service:
   secrets:
-    access-key: 397A244326452948404D635166546A576E5A7234753778214125442A472D4A61
-    refresh-key: 442A472D4B614E645267556B58703273357638792F423F4528482B4D62516553
+    access-key: ${JWT_ACCESS_KEY}
+    refresh-key: ${JWT_REFRESH_KEY}
