@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: car-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: car-service
+  template:
+    metadata:
+      labels:
+        app: car-service
+    spec:
+      containers:
+        - name: car-service
+          image: gznznzjsn/car-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: car-service-configmap
+                  key: DATASOURCE_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            - name: CAR-SERVICE_SECRETS_ACCESS-KEY
+              valueFrom:
+                secretKeyRef:
+                  name: car-service-secret
+                  key: CAR-SERVICE_SECRETS_ACCESS-KEY
+            - name: CAR-SERVICE_SECRETS_REFRESH-KEY
+              valueFrom:
+                secretKeyRef:
+                  name: car-service-secret
+                  key: CAR-SERVICE_SECRETS_REFRESH-KEY
