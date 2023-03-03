@@ -1,9 +1,12 @@
 spring:
+  application:
+    name: car-service
+  config:
+    import: optional:.env[.properties]
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
-
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
@@ -13,12 +16,29 @@ mybatis:
   mapper-locations: classpath:db/mybatis/mapper/*.xml
   type-aliases-package: com.gznznzjsn.carservice.domain.carservice
 
+
 springdoc:
   override-with-generic-response: false
   swagger-ui:
-    path: /api/v1/docs
+    path: ${car-service.context-path}/swagger-ui.html
+    url: ${car-service.context-path}/v3/api-docs
+    config-url: ${car-service.context-path}/v3/api-docs/swagger-config
+    disable-swagger-default-url: true
+  api-docs:
+    path: ${car-service.context-path}/v3/api-docs
 
 car-service:
+  context-path: /api/car-service
   secrets:
     access-key: ${CAR-SERVICE_SECRETS_ACCESS-KEY}
     refresh-key: ${CAR-SERVICE_SECRETS_REFRESH-KEY}
+
+server:
+  port: 0
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE-URL}
+  instance:
+    prefer-ip-address: true

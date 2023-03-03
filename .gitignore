@@ -37,4 +37,4 @@ build/
 mvnw
 mvnw.cmd
 .mvn
-.env
+src/main/resources/.env
