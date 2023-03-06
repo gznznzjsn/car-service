@@ -30,13 +30,13 @@ public class OrderServiceImpl implements OrderService {
         }
         User user = userService.get(order.getUser().getId());
         //todo
-        Boolean isAcceptable = webClientBuilder.build().get().uri("http://inventory-service/api/inventory")
-                .retrieve()
-                .bodyToMono(Boolean.class)
-                .block();
-        if (Boolean.FALSE.equals(isAcceptable)) {
-            throw new NotEnoughResourcesException("We are out of order forms!)))");
-        }
+//        Boolean isAcceptable = webClientBuilder.build().get().uri("http://inventory-service/api/inventory")
+//                .retrieve()
+//                .bodyToMono(Boolean.class)
+//                .block();
+//        if (Boolean.FALSE.equals(isAcceptable)) {
+//            throw new NotEnoughResourcesException("We are out of order forms!)))");
+//        }
         Order orderToCreate = Order.builder()
                 .status(OrderStatus.NOT_SENT)
                 .user(user)
