@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/car-service")
 @SecurityRequirement(name = "Bearer Authentication")
 public class AssignmentController {
 
