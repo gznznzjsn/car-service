@@ -1,8 +1,6 @@
 spring:
   application:
     name: car-service
-  config:
-    import: optional:.env[.properties]
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
@@ -28,17 +26,7 @@ springdoc:
     path: ${car-service.context-path}/v3/api-docs
 
 car-service:
-  context-path: /api/car-service
+  context-path: /api/v1
   secrets:
     access-key: ${CAR-SERVICE_SECRETS_ACCESS-KEY}
     refresh-key: ${CAR-SERVICE_SECRETS_REFRESH-KEY}
-
-server:
-  port: 0
-
-eureka:
-  client:
-    service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICE-URL}
-  instance:
-    prefer-ip-address: true

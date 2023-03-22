@@ -1,18 +1,16 @@
 package com.gznznzjsn.carservice.service.impl;
 
 import com.gznznzjsn.carservice.dao.OrderDao;
-import com.gznznzjsn.carservice.domain.exception.NotEnoughResourcesException;
-import com.gznznzjsn.carservice.domain.user.User;
-import com.gznznzjsn.carservice.domain.order.Order;
-import com.gznznzjsn.carservice.domain.order.OrderStatus;
 import com.gznznzjsn.carservice.domain.exception.IllegalActionException;
 import com.gznznzjsn.carservice.domain.exception.ResourceNotFoundException;
+import com.gznznzjsn.carservice.domain.order.Order;
+import com.gznznzjsn.carservice.domain.order.OrderStatus;
+import com.gznznzjsn.carservice.domain.user.User;
 import com.gznznzjsn.carservice.service.OrderService;
 import com.gznznzjsn.carservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +18,6 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderDao orderDao;
     private final UserService userService;
-    private final WebClient.Builder webClientBuilder;
 
     @Override
     @Transactional
@@ -29,14 +26,6 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalActionException("You can't create order without user!");
         }
         User user = userService.get(order.getUser().getId());
-        //todo
-//        Boolean isAcceptable = webClientBuilder.build().get().uri("http://inventory-service/api/inventory")
-//                .retrieve()
-//                .bodyToMono(Boolean.class)
-//                .block();
-//        if (Boolean.FALSE.equals(isAcceptable)) {
-//            throw new NotEnoughResourcesException("We are out of order forms!)))");
-//        }
         Order orderToCreate = Order.builder()
                 .status(OrderStatus.NOT_SENT)
                 .user(user)

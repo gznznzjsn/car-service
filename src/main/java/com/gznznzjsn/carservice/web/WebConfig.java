@@ -6,10 +6,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 @SecurityScheme(
@@ -20,7 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 )
 @OpenAPIDefinition(
         info = @Info(title = "Car Service API", version = "1.0"),
-        servers = {@Server(url = "http://localhost:8080", description = "Local server"), @Server(url = "http://localhost:8081", description = "Docker server")},
+        servers = {@Server(url = "http://localhost:8080", description = "Local server")},
         tags = {
                 @Tag(name = "Authentication", description = "Registration, authentication and token management"),
                 @Tag(name = "Orders", description = "Order management, you must be authenticated"),
@@ -29,11 +26,4 @@ import org.springframework.web.reactive.function.client.WebClient;
         }
 )
 public class WebConfig {
-
-    @Bean
-    @LoadBalanced
-    public WebClient.Builder webClientBuilder() {
-        return WebClient.builder();
-    }
-
 }

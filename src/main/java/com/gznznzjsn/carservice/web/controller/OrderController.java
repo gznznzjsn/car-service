@@ -26,7 +26,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/car-service/users/{userId}/orders")
+@RequestMapping("/api/v1/users/{userId}/orders")
 @SecurityRequirement(name = "Bearer Authentication")
 public class OrderController {
 
