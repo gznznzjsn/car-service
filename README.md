@@ -29,8 +29,12 @@ Main possibilities are:
 4. Start application: `docker compose up`
 5. Open **Swagger**: http://localhost:8080/api/v1/swagger-ui/index.html
 6. Feel free to use!
-- With Kubernetes:
-...
+- With Kubernetes and Minikube:
+1. Clone project: `git clone https://github.com/gznznzjsn/car-service`
+2. Go to project folder, open directory `kubernetes`
+3. Execute run.sh
+4. Open terminal and run `minikube service car-service`
+5. Go to `/api/v1/swagger-ui/index.html` to open swagger
 
 
 [//]: # (- [API Gateway]&#40;https://github.com/gznznzjsn/api-gateway&#41; - single entrypoint for all clients, routes requests to appropriate microservices.)
